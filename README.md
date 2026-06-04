@@ -95,7 +95,7 @@ Sau khi cấu hình ngưỡng quyết định tối ưu bằng Youden Index tạ
 | Chỉ số | Giá trị | Ý nghĩa thực tế |
 | :--- | :---: | :--- |
 | **Accuracy** | **90.03%** | 90/100 mẫu được phân loại chính xác |
-| **Recall** | **90.00%** | Bắt trúng đúng 9/10 ca té ngã thực tế |
+| **Recall (Fall)** | **90.00%** | Bắt trúng đúng 9/10 ca té ngã thực tế |
 | **F1-Score** | **81.52%** | Đạt trạng thái cân bằng tốt giữa Precision và Recall |
 
 ---
