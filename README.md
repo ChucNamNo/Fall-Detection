@@ -21,7 +21,7 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 ## 2. Bộ dữ liệu huấn luyện (Dataset)
 
 * **Nguồn gốc:** Bộ dữ liệu chuẩn hóa **IMVIA Le2i Fall Detection Dataset**.
-* **Kênh khai thác:** Được khai thác qua phiên bản lưu trữ trên Kaggle: [FallDataset IMVIA](https://www.kaggle.com/).
+* **Kênh khai thác:** Được khai thác qua phiên bản lưu trữ trên Kaggle: [FallDataset IMVIA](https://www.kaggle.com/datasets/tuyenldvn/falldataset-imvia/data).
 * **Bối cảnh dữ liệu:** Video ghi hình các hành vi sinh hoạt thường ngày (ADL - Activities of Daily Living) và các pha té ngã mô phỏng tại nhiều không gian phòng khác nhau (`Coffee_room_01`, `Home_01`,...).
 
 ### Thống kê tập dữ liệu
