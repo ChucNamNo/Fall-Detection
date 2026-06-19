@@ -32,7 +32,6 @@ def parse_annotation_advanced(annotation_path):
 
             clean_lines = [line.strip() for line in lines if line.strip()]
 
-            # Bước 1: Thử lấy mốc từ 2 dòng đầu
             if len(clean_lines) >= 2:
                 if clean_lines[0].isdigit() and clean_lines[1].isdigit():
                     start_fall = int(clean_lines[0])
@@ -40,18 +39,16 @@ def parse_annotation_advanced(annotation_path):
                     for f_idx in range(start_fall, end_fall + 1):
                         fall_frames.add(f_idx)
 
-            # Bước 2: Quét kiểm tra mã trạng thái chi tiết từng dòng để tránh sót nhãn lạ (như video 49)
             for line in clean_lines:
                 parts = line.split(',')
                 if len(parts) >= 2:
                     try:
                         f_idx = int(parts[0].strip())
                         status_code = int(parts[1].strip())
-                        # Quy ước các mã trạng thái liên quan đến hành vi ngã trong IMVIA Le2i
                         if status_code in [2, 4, 7, 8]:
                             fall_frames.add(f_idx)
                     except ValueError:
-                        continue  # Bỏ qua 2 dòng đầu nếu nó không có dấu phẩy
+                        continue  
         except Exception as e:
             pass
 
