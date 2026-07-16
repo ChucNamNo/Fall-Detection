@@ -163,7 +163,7 @@ Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập
 Sự phân bổ đồng đều này chứng minh việc kết hợp đồng thời **Focal Loss chuẩn hóa**, kỹ thuật tiền xử lý **Pre-padding (Replicate)** và thuật toán **hiệu chỉnh ngưỡng Youden Index (Threshold = 0.5936)** đã giải quyết triệt để sự thiên vị phân lớp do bài toán mất cân bằng nhãn gốc (3:1) gây ra.
  
 #### Các chỉ số lỗi quan trọng:
-* **Tỷ lệ Báo động giả (False Alarm Rate - 7%):** Chỉ có 7% số ca sinh hoạt bình thường bị mô hình dự đoán nhầm thành té ngã. Đây là một bước tiến lớn giúp hệ thống vận hành thực tế tránh gây hoang mang, mệt mỏi hay làm phiền cho người giám sát/điều dưỡng.
+* **Tỷ lệ Báo động giả (False Alarm Rate - 7%):** Chỉ có 7% số ca sinh hoạt bình thường bị mô hình dự đoán nhầm thành té ngã. 
 * **Tỷ lệ Bỏ sót ca ngã (False Negative Rate - 12%):** Mô hình bỏ sót khoảng 1.2 ca trên 10 ca ngã thực tế. Trong bối cảnh y tế, tỷ lệ này hoàn toàn nằm trong phạm vi an toàn chấp nhận được đối với một kiến trúc LSTM gọn nhẹ (chỉ 32 hidden units) hoạt động thuần túy trên dữ liệu tọa độ khung xương bảo mật quyền riêng tư.
 
 ### 5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)
