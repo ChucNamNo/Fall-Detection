@@ -51,7 +51,7 @@ Thay vì chỉ sử dụng tọa độ tĩnh `(x, y)`, hệ thống tiến hành
 > 1. **Triệt tiêu nhiễu động học:** Loại bỏ hoàn toàn hiện tượng biến động đột biến (nhiễu vật lý giả) của vận tốc và gia tốc tại vùng ranh giới đệm.
 > 2. **Bảo toàn thông tin cuối:** Đảm bảo thông tin thực tế cuối cùng của chuỗi luôn nằm ở bước thời gian cuối cùng (`t = -1`) khi đưa vào mạng LSTM, giúp mô hình ra quyết định chính xác nhất.
 
-#### 📐 Chi tiết cấu trúc dữ liệu đầu vào (Input Tensor Shape)
+#### Chi tiết cấu trúc dữ liệu đầu vào (Input Tensor Shape)
 
 | Loại đặc trưng | Phương thức tính toán | Số lượng đặc trưng | Kích thước (Shape) |
 | :--- | :--- | :---: | :---: |
