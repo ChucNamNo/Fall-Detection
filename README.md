@@ -172,12 +172,12 @@ Biểu đồ dưới đây thể hiện tiến trình tối ưu hóa hàm tổn 
   <img src="plots/lstm_training_history.png" alt="Training History Analysis" width="600">
 </p>
 
-#### a. Phân tích biểu đồ đường Loss
-* **Khả năng hội tụ ổn định:** Quá trình huấn luyện diễn ra cực kỳ mượt mà. `Train Loss` giảm đều đặn không có điểm gãy hay răng cưa lớn từ **0.0466** (Epoch 1) xuống còn **0.0125** (Epoch 50), chứng minh mô hình đang học đúng hướng.
-* **Kiểm soát Overfitting xuất sắc:** Trái ngược hoàn toàn với các cấu hình chưa tối ưu trước đó (khi `Val Loss` bị kéo vọt lên cao), ở phiên bản này `Val Loss` giảm sâu từ **0.0436** và đi ngang, dao động ổn định trong vùng cực tiểu từ **0.0183** đến **0.0247** ở các epochs cuối. Khoảng cách giữa Loss của tập Train và tập Val cuối cùng chỉ chênh lệch khoảng **2 lần** (giảm sâu so với mức 5.25 lần trước đây). Điều này chứng minh mô hình có tính tổng quát hóa (generalization) cực kỳ cao nhờ cơ chế tăng cường dữ liệu *Skeleton Jittering* thích hợp.
-* **Cơ chế khôi phục trọng số tối ưu:** Nhờ chiến lược lưu vết thông minh, hệ thống tự động ghi nhận và khôi phục trạng thái mô hình tốt nhất tại **Epoch 44** (thời điểm đạt điểm tối ưu tổng hợp trên tập Validation với Val Recall: **95.1%** và Val F1: **83.8%**), giúp bảo vệ mô hình khỏi các rung lắc cục bộ ở các epochs cuối cùng.
+#### a. Biểu đồ đường Loss
+* **Độ hội tụ tốt:** Đường `Train Loss` (màu xanh dương) giảm đều đặn và mượt mà từ **0.0466** (Epoch 1) xuống còn **0.0125** (Epoch 50), cho thấy mô hình học tập rất hiệu quả qua từng vòng lặp.
+* **Độ ổn định cao:** Đường `Val Loss` (màu cam đứt nét) giảm sâu ở các epoch đầu và dao động ổn định trong vùng cực tiểu từ **0.0183** đến **0.0247** ở nửa sau quá trình huấn luyện. Khoảng cách giữa hai đường được duy trì ở mức nhỏ và không có hiện tượng Val Loss bị vọt ngược lên cao, chứng tỏ mô hình kiểm soát tốt hiện tượng quá khớp (overfitting).
+* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được hệ thống tự động ghi nhận và khôi phục tại **Epoch 44** (thời điểm đạt Val Recall: **95.1%** và Val F1: **83.8%**), giúp bảo vệ mô hình khỏi các dao động nhỏ ở các epoch cuối cùng.
 
-#### b. Phân tích biểu đồ độ chính xác (Accuracy)
-* **Tập huấn luyện (Train Set):** `Train Accuracy` tăng tiến bền vững từ **79.6%** lên **94.6%** ở epoch 50.
-* **Tập kiểm thử nội bộ (Validation Set):** `Val Accuracy` bứt phá rất nhanh ngay từ 10 epochs đầu tiên (vượt ngưỡng 89%) và duy trì dao động ổn định trong biên độ hẹp **90% - 93%** ở suốt nửa sau quá trình huấn luyện. 
-* Sự dao động nhẹ này là hiện tượng bình thường khi huấn luyện với kích thước lô nhỏ (`batch_size = 8`), nhưng xu hướng tổng thể vẫn giữ vững ở mức cao, chứng minh thuật toán phân loại có độ tin cậy rất vững chắc trước khi bước vào bài test độc lập cuối cùng.
+#### b. Biểu đồ độ chính xác (Accuracy)
+* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` (màu xanh lá) tăng tiến bền vững từ **79.6%** lên **94.6%** ở epoch 50.
+* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` (màu đỏ đứt nét) bứt phá rất nhanh ngay từ 10 epoch đầu tiên (vượt qua 89%) và duy trì dao động ổn định trong biên độ **90% - 93%** cho đến cuối. 
+* Sự dao động nhẹ của đường Val là hiện tượng bình thường khi huấn luyện với kích thước batch nhỏ (`batch_size = 8`), nhưng xu hướng tổng thể vẫn giữ vững ở mức cao, khẳng định độ tin cậy của thuật toán.
