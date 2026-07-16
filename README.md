@@ -6,7 +6,7 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 <img width="536" height="344" alt="Untitled Jul 16 2026" src="https://github.com/user-attachments/assets/5c53e040-2c88-4d5f-bd3e-b22d6ba24824" />
 </p>
 
-[Video Demo](https://youtu.be/21NPpfityFI)
+[Video Demo](https://youtu.be/JisHb_Q-2x8)
 
 ---
 
