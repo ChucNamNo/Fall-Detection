@@ -3,7 +3,7 @@
 Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên trích xuất khung xương người (**Skeleton-based Fall Detection**). Dự án tối ưu hóa hiệu năng bằng cách kết hợp mô hình thị giác **YOLOv8-Pose** để trích xuất đặc trưng động học và mạng hồi quy **LSTM** để phân loại chuỗi hành vi theo thời gian.
 
 <p align="center">
-<img width="854" height="480" alt="clideo_editor_ce9844098ea4427b865891ec40bc2605" src="https://github.com/user-attachments/assets/ff000220-d8a6-4f8d-9d22-b4f4cad3808d" />
+<img width="436" height="244" alt="Untitled Jul 16 2026" src="https://github.com/user-attachments/assets/5c53e040-2c88-4d5f-bd3e-b22d6ba24824" />
 </p>
 
 [Video Demo](https://youtu.be/21NPpfityFI)
