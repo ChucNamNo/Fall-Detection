@@ -142,6 +142,7 @@ Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập
 | :--- | :---: | :--- |
 | **Accuracy** | **91.48%** | 91.5/100 mẫu được phân loại chính xác |
 | **Recall (Fall)** | **87.57%** | Nhận diện chính xác hơn 87.5% các ca té ngã thực tế |
+| **Precision** | **79.61%** | Độ tin cậy cao, trong 100 ca hệ thống phát cảnh báo "Té ngã" thì có gần 80 ca là ngã thật sự. |
 | **F1-Score** | **83.40%** | Đạt trạng thái cân bằng rất tốt, hạn chế tối đa báo động giả |
 
 ---
