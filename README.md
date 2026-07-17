@@ -168,7 +168,7 @@ Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập
 ### 5.1. Ma trận nhầm lẫn (Confusion Matrix Analysis)
 
 <p align="center">
-  <img src="plots/bigru_attn_normalized_confusion_matrix.png" alt="Normalized Confusion Matrix" width="550">
+  <img src="plots/Confusion Matrix Fall Detection.png" alt="Normalized Confusion Matrix" width="550">
 </p>
 
 Đường chéo chính của ma trận nhầm lẫn đạt tỷ lệ phân loại rất cao và đồng đều giữa hai lớp:
@@ -183,7 +183,7 @@ Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập
 ### 5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)
 
 <p align="center">
-  <img src="plots/bigru_attn_training_history.png" alt="Training History Analysis" width="800">
+  <img src="plots/Training History Fall Detection" alt="Training History Analysis" width="800">
 </p>
 
 #### a. Biểu đồ đường Loss
