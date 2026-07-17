@@ -11,11 +11,12 @@
 Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên trích xuất khung xương người (**Skeleton-based Fall Detection**). Dự án tối ưu hóa hiệu năng bằng cách kết hợp mô hình thị giác **YOLOv8-Pose** để trích xuất đặc trưng động học và mạng hồi quy kết hợp cơ chế chú ý **BiGRU-Attention** để phân loại chuỗi hành vi theo thời gian.
 
 <p align="center">
-  <img width="536" height="344" alt="Fall Detection Demo Snapshot" src="https://github.com/user-attachments/assets/5c53e040-2c88-4d5f-bd3e-b22d6ba24824" />
+  <img width="536" height="344" alt="Fall Detection Demo Snapshot" src="https://github.com/user-attachments/assets/e0e63c29-48d7-4b97-844a-76a12af4c81b" />
 </p>
 
+
 <p align="center">
-  <a href="https://youtu.be/JisHb_Q-2x8" target="_blank">
+  <a href="https://youtu.be/1Gddk5XIg-o" target="_blank">
     <img src="https://img.shields.io/badge/🎥%20Video%20Demo-Watch%20on%20YouTube-red?style=for-the-badge&logo=youtube" alt="Video Demo">
   </a>
 </p>
