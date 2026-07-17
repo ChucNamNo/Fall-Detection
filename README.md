@@ -183,7 +183,7 @@ Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập
 ### 5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)
 
 <p align="center">
-  <img src="plots/Training History Fall Detection" alt="Training History Analysis" width="800">
+  <img src="plots/Training History Fall Detection.png" alt="Training History Analysis" width="800">
 </p>
 
 #### a. Biểu đồ đường Loss
