@@ -11,7 +11,7 @@
 Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên trích xuất khung xương người (**Skeleton-based Fall Detection**). Dự án tối ưu hóa hiệu năng bằng cách kết hợp mô hình thị giác **YOLOv8-Pose** để trích xuất đặc trưng động học và mạng hồi quy kết hợp cơ chế chú ý **BiGRU-Attention** để phân loại chuỗi hành vi theo thời gian.
 
 <p align="center">
-  <img width="636" height="444" alt="Fall Detection Demo Snapshot" src="https://github.com/user-attachments/assets/e0e63c29-48d7-4b97-844a-76a12af4c81b" />
+  <img width="636" height="430" alt="Fall Detection Demo Snapshot" src="https://github.com/user-attachments/assets/e0e63c29-48d7-4b97-844a-76a12af4c81b" />
 </p>
 
 
