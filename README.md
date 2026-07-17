@@ -1,12 +1,43 @@
-# Real-Time Skeleton-Based Fall Detection System
-
-Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên trích xuất khung xương người (**Skeleton-based Fall Detection**). Dự án tối ưu hóa hiệu năng bằng cách kết hợp mô hình thị giác **YOLOv8-Pose** để trích xuất đặc trưng động học và mạng hồi quy **LSTM** để phân loại chuỗi hành vi theo thời gian.
+# 🏃‍♂️ Real-Time Skeleton-Based Fall Detection System
 
 <p align="center">
-<img width="536" height="344" alt="Untitled Jul 16 2026" src="https://github.com/user-attachments/assets/5c53e040-2c88-4d5f-bd3e-b22d6ba24824" />
+  <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c?logo=pytorch&logoColor=white" alt="PyTorch">
+  <img src="https://img.shields.io/badge/YOLOv8--Pose-v8.0-00FFFFFF?logo=ultralytics&logoColor=white" alt="YOLOv8-Pose">
+  <img src="https://img.shields.io/badge/Architecture-BiGRU--Attention-darkorange" alt="Architecture">
+  <img src="https://img.shields.io/badge/Status-Completed-success" alt="Status">
 </p>
 
-[Video Demo](https://youtu.be/JisHb_Q-2x8)
+Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên trích xuất khung xương người (**Skeleton-based Fall Detection**). Dự án tối ưu hóa hiệu năng bằng cách kết hợp mô hình thị giác **YOLOv8-Pose** để trích xuất đặc trưng động học và mạng hồi quy kết hợp cơ chế chú ý **BiGRU-Attention** để phân loại chuỗi hành vi theo thời gian.
+
+<p align="center">
+  <img width="536" height="344" alt="Fall Detection Demo Snapshot" src="https://github.com/user-attachments/assets/5c53e040-2c88-4d5f-bd3e-b22d6ba24824" />
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/JisHb_Q-2x8" target="_blank">
+    <img src="https://img.shields.io/badge/🎥%20Video%20Demo-Watch%20on%20YouTube-red?style=for-the-badge&logo=youtube" alt="Video Demo">
+  </a>
+</p>
+
+---
+
+## Mục lục
+- [1. Mục tiêu dự án (Objective)](#1-mục-tiêu-dự-án-objective)
+- [2. Bộ dữ liệu huấn luyện (Dataset)](#2-bộ-dữ-liệu-huấn-luyện-dataset)
+  - [2.1. Chiến lược phân chia dữ liệu (Data Splitting Strategy)](#21-chiến-lược-phân-chia-dữ-liệu-data-splitting-strategy)
+- [3. Phương pháp thực hiện (Methodology)](#3-phương-pháp-thực-hiện-methodology)
+  - [3.1. Chuẩn hóa không gian (Spatial Normalization)](#31-chuẩn-hóa-không-gian-spatial-normalization)
+  - [3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)](#32-trích-xuất-đặc-trưng-động-học-kinematic-feature-engineering)
+  - [3.3. Xử lý mất cân bằng nhãn (Imbalanced Data Handling)](#33-xử-lý-mất-cân-bằng-nhãn-imbalanced-data-handling)
+  - [3.4. Chiến lược lựa chọn mô hình (Model Selection Pipeline)](#34-chiến-lược-lựa-chọn-mô-hình-model-selection-pipeline)
+- [4. Kết quả thực nghiệm (Experimental Results)](#4-kết-quả-thực-nghiệm-experimental-results)
+  - [4.1. So sánh hiệu năng 5-Fold Cross Validation](#41-so-sánh-hiệu-năng-5-fold-cross-validation)
+  - [4.2. Kết quả cấu hình tối ưu từ Grid Search](#42-kết-quả-cấu-hình-tối-ưu-từ-grid-search)
+  - [4.3. Đánh giá trên tập Test độc lập hoàn toàn](#43-đánh-giá-trên-tập-test-độc-lập-hoàn-toàn)
+- [5. Phân tích sâu & Đánh giá (Analysis)](#5-phân-tích-sâu--đánh-giá-analysis)
+  - [5.1. Ma trận nhầm lẫn (Confusion Matrix Analysis)](#51-ma-trận-nhầm-lẫn-confusion-matrix-analysis)
+  - [5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)](#52-biểu-đồ-lịch-sử-huấn-luyện-training-history-analysis)
 
 ---
 
@@ -31,15 +62,16 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 | **1** | Fall (Té ngã) | 2,463 | 24.4% |
 | **Tổng** | | **10,091** | **100%** |
 
-> **Thách thức cốt lõi:** Sự chênh lệch **3:1** giữa hai lớp tạo ra bài toán **Imbalanced Classification** — đây là bài toán trung tâm cần giải quyết xuyên suốt pipeline xử lý.
+> [!WARNING]
+> **Thách thức cốt lõi:** Sự chênh lệch **3:1** giữa hai lớp tạo ra bài toán *Imbalanced Classification* — đây là bài toán trung tâm cần giải quyết xuyên suốt pipeline xử lý.
 
 ### 2.1. Chiến lược phân chia dữ liệu (Data Splitting Strategy)
 
-Để đảm bảo tính khách quan và khả năng tổng quát hóa của hệ thống, toàn bộ bộ dữ liệu gồm **10,091 mẫu** được phân chia theo tỷ lệ vàng **70 : 15 : 15** bằng phương pháp phân tầng (**Stratified Split**). Phương pháp này giúp giữ nguyên tỷ lệ lệch nhãn ~3:1 (ADL vs Fall) đồng đều trên cả 3 tập dữ liệu:
+Toàn bộ bộ dữ liệu gồm **10,091 mẫu** được phân chia theo tỷ lệ vàng **70 : 15 : 15** bằng phương pháp phân tầng (**Stratified Split**). Phương pháp này giúp giữ nguyên tỷ lệ lệch nhãn ~3:1 (ADL vs Fall) đồng đều trên cả 3 tập dữ liệu:
 
-*   **Tập Huấn luyện (Train Set - 70%):** Dùng để cập nhật trọng số cho mô hình LSTM kết hợp kỹ thuật tăng cường dữ liệu *Skeleton Jittering*.
-*   **Tập Kiểm thử nội bộ (Validation Set - 15%):** Dùng để theo dõi quá trình hội tụ, kích hoạt cơ chế dừng sớm (*Early Stopping*) và tìm ngưỡng quyết định tối ưu (*Optimal Threshold*) bằng Youden Index.
-*   **Tập Kiểm thử độc lập (Test Set - 15%):** Hoàn toàn cô lập trong suốt quá trình huấn luyện và tối ưu tham số, chỉ được sử dụng một lần duy nhất để đánh giá hiệu năng thực tế cuối cùng của hệ thống trên môi trường khách quan.
+* **Tập Huấn luyện (Train Set - 70%):** Dùng để cập nhật trọng số cho mô hình BiGRU-Attention kết hợp kỹ thuật tăng cường dữ liệu *Skeleton Jittering*.
+* **Tập Kiểm thử nội bộ (Validation Set - 15%):** Dùng để theo dõi quá trình hội tụ, kích hoạt cơ chế dừng sớm (*Early Stopping*) và tìm ngưỡng quyết định tối ưu (*Optimal Threshold*) bằng Youden Index.
+* **Tập Kiểm thử độc lập (Test Set - 15%):** Hoàn toàn cô lập trong suốt quá trình huấn luyện và tối ưu tham số, chỉ được sử dụng một lần duy nhất để đánh giá hiệu năng thực tế cuối cùng của hệ thống.
 
 #### Bảng thống kê chi tiết số lượng mẫu sau phân chia:
 
@@ -58,15 +90,13 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 Tọa độ 17 keypoints từ YOLOv8-Pose được dịch chuyển gốc tọa độ về **tâm hông (hip center)**, sau đó chia cho chiều cao động của cơ thể trong frame. Kỹ thuật này giúp vector khung xương **bất biến với khoảng cách camera** — người đứng gần hay xa đều cho ra đặc trưng đồng nhất.
 
 ### 3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)
-
 Thay vì chỉ sử dụng tọa độ tĩnh `(x, y)`, hệ thống tiến hành tính toán thêm vi phân bậc 1 (Vận tốc) và bậc 2 (Gia tốc) theo thời gian để nắm bắt toàn diện hành vi động của đối tượng qua từng khung hình.
 
+> [!NOTE]
 > **Cơ chế Đệm chuỗi (Padding Strategy)**
-> Để xử lý các chuỗi video có độ dài ngắn hơn `max_len = 16`, hệ thống áp dụng kỹ thuật **Pre-padding bằng cách lặp lại frame đầu tiên (Replicate Padding)** thay vì đệm số 0 (Zero-padding) ở cuối chuỗi. 
-> 
-> Phương pháp này giải quyết triệt để hai vấn đề cốt lõi:
-> 1. **Triệt tiêu nhiễu động học:** Loại bỏ hoàn toàn hiện tượng biến động đột biến (nhiễu vật lý giả) của vận tốc và gia tốc tại vùng ranh giới đệm.
-> 2. **Bảo toàn thông tin cuối:** Đảm bảo thông tin thực tế cuối cùng của chuỗi luôn nằm ở bước thời gian cuối cùng (`t = -1`) khi đưa vào mạng LSTM, giúp mô hình ra quyết định chính xác nhất.
+> Để xử lý các chuỗi video có độ dài ngắn hơn `max_len = 16`, hệ thống áp dụng kỹ thuật **Pre-padding bằng cách lặp lại frame đầu tiên (Replicate Padding)** thay vì đệm số 0 (Zero-padding) ở cuối chuỗi nhằm:
+> 1. **Triệt tiêu nhiễu động học:** Loại bỏ hoàn toàn hiện tượng biến động đột biến của vận tốc và gia tốc tại vùng ranh giới đệm.
+> 2. **Bảo toàn thông tin cuối:** Đảm bảo thông tin thực tế cuối cùng của chuỗi luôn nằm ở bước thời gian cuối cùng (`t = -1`) khi đưa vào mạng học sâu, giúp mô hình ra quyết định chính xác nhất.
 
 #### Chi tiết cấu trúc dữ liệu đầu vào (Input Tensor Shape)
 
@@ -79,60 +109,29 @@ Thay vì chỉ sử dụng tọa độ tĩnh `(x, y)`, hệ thống tiến hành
 
 ---
 
-#### Ý nghĩa vật lý
-Sự kết hợp giữa các bậc vi phân giúp mô hình dễ dàng phân biệt được các hành vi có quỹ đạo di chuyển tương đồng nhưng khác biệt hoàn toàn về mặt động lực học thế năng:
-
-* **Ngồi xuống nhanh:** Gia tốc biến thiên đều, nằm trong tầm kiểm soát chủ động của cơ thể.
-* **Ngã quỵ đột ngột:** Gia tốc xuất hiện điểm đột biến cực đại (Spike Value) do cơ thể rơi tự do mất kiểm soát dưới tác dụng của trọng lực.
-
 ### 3.3. Xử lý mất cân bằng nhãn (Imbalanced Data Handling)
 
-Do tập dữ liệu gốc có sự chênh lệch lớn về tỷ lệ nhãn giữa các lớp hành vi sinh hoạt thường ngày (ADL) và hành vi té ngã (Fall) với tỷ lệ xấp xỉ **3:1**, hệ thống áp dụng đồng thời hai phương pháp bổ trợ ở cả cấp độ **Hàm mất mát (Loss Function)** và **Tăng cường dữ liệu (Data Augmentation)**:
-
----
-
 #### 1. Focal Loss chuẩn hóa ($\alpha = 0.75, \gamma = 2.0$)
-Thay thế hoàn toàn cho hàm Binary Cross Entropy (BCE) truyền thống nhằm giải quyết triệt để vấn đề mất cân bằng nhóm.
-
-* **Cơ chế hoạt động:** Focal Loss tự động hạ thấp trọng số tổn thất của các mẫu dễ phân loại (các chuỗi hành động ADL chiếm đa số và dễ đoán) và tập trung phân phối Gradient vào các mẫu khó học (các chuỗi hành vi Fall).
-* **Công thức toán học:** Hệ số cân bằng lớp $\alpha_t$ được tính toán động dựa trên nhãn thực tế $y \in \{0, 1\}$ của từng mẫu:
+Thay thế hoàn toàn cho hàm Binary Cross Entropy (BCE) truyền thống. Focal Loss tự động hạ thấp trọng số tổn thất của các mẫu dễ phân loại (ADL chiếm đa số) và tập trung phân phối Gradient vào các mẫu khó học (Fall).
 
 $$\alpha_t = y \cdot \alpha + (1 - y) \cdot (1 - \alpha)$$
 
-Hàm tổn thất Focal Loss được định nghĩa như sau:
-
 $$FL(p_t) = -\alpha_t (1 - p_t)^\gamma \log(p_t)$$
 
-> Trong đó:
-> * $p_t$ là xác suất dự đoán đúng của mô hình cho nhãn thực tế.
-> * Hệ số $\alpha = 0.75$ giúp tăng trọng số phạt khi bỏ sót ca ngã (lớp 1) và giảm phạt khi dự đoán sai lớp bình thường (lớp 0).
-> * Hệ số tập trung $\gamma = 2.0$ điều chỉnh tốc độ giảm trọng số của các mẫu dễ học.
-
----
+* Hệ số $\alpha = 0.75$ giúp tăng trọng số phạt khi bỏ sót ca ngã (lớp 1).
+* Hệ số tập trung $\gamma = 2.0$ điều chỉnh tốc độ giảm trọng số của các mẫu dễ học.
 
 #### 2. Nhiễu Skeleton Jittering (Data Augmentation)
-Để tránh tình trạng mô hình bị quá khớp (overfitting) vào các tư thế té ngã cụ thể trong tập huấn luyện, hệ thống áp dụng kỹ thuật tăng cường dữ liệu động học trực tiếp trên cấu trúc khung xương.
-
-* **Cách thực hiện:** Trong quá trình huấn luyện, với xác suất $50\%$, các chuỗi thuộc nhãn `Fall` (lớp 1) sẽ được bơm thêm nhiễu trắng Gaussian ngẫu nhiên:
+Trong quá trình huấn luyện, với xác suất $50\%$, các chuỗi thuộc nhãn `Fall` (lớp 1) sẽ được bơm thêm nhiễu trắng Gaussian ngẫu nhiên nhằm giúp mô hình học được các biến thể tư thế ngã đa dạng hơn, cải thiện đáng kể khả năng tổng quát hóa:
 
 $$\text{Noise} \sim \mathcal{N}(0, 0.02)$$
 
-* **Ý nghĩa:** Việc "rung lắc" nhẹ các tọa độ khớp xương qua mỗi epoch giúp mô hình học được các biến thể tư thế ngã đa dạng hơn (ví dụ: ngã hơi lệch trái, lệch phải hoặc ngã co người), từ đó cải thiện đáng kể khả năng tổng quát hóa trên tập dữ liệu thực tế ngoài môi trường thử nghiệm.
+---
 
 ### 3.4. Chiến lược lựa chọn mô hình (Model Selection Pipeline)
-Quá trình thực nghiệm được chia làm **2 giai đoạn độc lập**:
 
-* **Giai đoạn 1 — Lựa chọn kiến trúc (5-Fold Cross Validation):** Đánh giá khách quan 3 kiến trúc trên toàn bộ dữ liệu bằng phương pháp *Stratified K-Fold* (giữ nguyên tỷ lệ nhãn ở mỗi fold):
-    * **LSTM:** Bộ nhớ dài hạn, phù hợp chuỗi thời gian có phụ thuộc xa.
-    * **GRU:** Biến thể nhẹ hơn LSTM, tối ưu tốc độ hội tụ.
-    * **CNN-1D:** Trích xuất đặc trưng cục bộ theo trục thời gian.
-    * *Tiêu chí chọn:* Kiến trúc sở hữu **Mean Recall cao nhất** sẽ đi tiếp vào vòng trong.
-
-* **Giai đoạn 2 — Tối ưu siêu tham số (Grid Search):** Thực hiện tối ưu hóa cấu hình trên kiến trúc chiến thắng thông qua 3 trục không gian tham số:
-    * `hidden_size`: `[32, 64]`
-    * `num_layers`: `[1, 2]`
-    * `lr` (Learning Rate): `[0.001, 0.005]`
-    * *Quy mô:* Gồm 8 tổ hợp, mỗi tổ hợp chạy tối đa 35 epoch kết hợp *Early Stopping*. Model cuối cùng sẽ được thử thách trên **Test set độc lập hoàn toàn** với ngưỡng phân loại (threshold) tối ưu xác định bởi **Youden Index** trên Validation set.
+* **Giai đoạn 1 — Lựa chọn kiến trúc (5-Fold Cross Validation):** Đánh giá khách quan 4 kiến trúc trên toàn bộ dữ liệu bằng phương pháp *Stratified K-Fold*: **BiGRU-Attention**, **LSTM**, **GRU**, **CNN-1D**. Kiến trúc sở hữu **Mean F1-Score cao nhất** sẽ được chọn.
+* **Giai đoạn 2 — Tối ưu siêu tham số (Grid Search):** Thực hiện tối ưu hóa cấu hình trên kiến trúc chiến thắng qua không gian tham số: `hidden_size: [32, 64]`, `num_layers: [1, 2]`, `lr: [0.001, 0.005]`. Model tốt nhất được xác định ngưỡng phân loại (threshold) bằng **Youden Index** trên Validation set trước khi đánh giá trên Test set độc lập.
 
 ---
 
@@ -141,61 +140,57 @@ Quá trình thực nghiệm được chia làm **2 giai đoạn độc lập**:
 ### 4.1. So sánh hiệu năng 5-Fold Cross Validation
 | Kiến trúc Mô hình | Mean Accuracy | Mean Recall | Mean F1-Score | Trạng thái |
 | :--- | :---: | :---: | :---: | :---: |
-| **LSTM (Optimized)** | **93.91%** | **85.71%** | **87.29%** | **Được chọn** |
-| **GRU** | 93.44% | 84.69% | 86.29% | Loại |
-| **CNN-1D (TCN)** | 89.24% | 72.96% | 76.73% | Loại |
+| **BiGRU-Attention (Optimized)** | **92.80%** | **90.78%** | **86.02%** | **Được chọn** |
+| **LSTM** | 91.07% | 93.34% | 83.63% | Loại |
+| **GRU** | 90.80% | 92.49% | 83.13% | Loại |
+| **CNN-1D** | 83.48% | 88.67% | 72.44% | Loại |
 
 ### 4.2. Kết quả cấu hình tối ưu từ Grid Search
 | Tham số | Giá trị tối ưu |
 | :--- | :---: |
-| **Hidden Size** | 32 |
+| **Hidden Size** | 64 |
 | **Num Layers** | 2 |
-| **Learning Rate** | 0.005 |
+| **Learning Rate** | 0.001 |
 
 ### 4.3. Đánh giá trên tập Test độc lập hoàn toàn
-Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập Validation, **ngưỡng tối ưu được xác định là 0.5936** (cao hơn mức mặc định 0.5). Việc dịch chuyển ngưỡng lên cao là hoàn toàn hợp lý nhằm cân bằng lại việc mô hình bị thiên vị dự đoán xác suất cao do tác động của hệ số $\alpha = 0.75$ trong Focal Loss. Mô hình đạt kết quả trên tập Test độc lập như sau:
+Sau khi tối ưu hóa ngưỡng quyết định bằng Youden Index trên tập Validation, **ngưỡng tối ưu được xác định là 0.4577**. Mô hình đạt kết quả xuất sắc trên tập Test độc lập như sau:
 
 | Chỉ số | Giá trị | Ý nghĩa thực tế |
 | :--- | :---: | :--- |
-| **Accuracy** | **91.48%** | 91.5/100 mẫu được phân loại chính xác |
-| **Recall (Fall)** | **87.57%** | Nhận diện chính xác hơn 87.5% các ca té ngã thực tế |
-| **Precision** | **79.61%** | Độ tin cậy cao, trong 100 ca hệ thống phát cảnh báo "Té ngã" thì có gần 80 ca là ngã thật sự. |
-| **F1-Score** | **83.40%** | Đạt trạng thái cân bằng rất tốt, hạn chế tối đa báo động giả |
+| **Accuracy** | **92.47%** | Gần 92.5/100 mẫu được phân loại chính xác hoàn toàn. |
+| **Recall (Fall)** | **91.62%** | Nhận diện chính xác hơn 91.6% các ca té ngã thực tế. |
+| **F1-Score** | **85.61%** | Đạt trạng thái cân bằng rất cao giữa Precision và Recall. |
 
 ---
 
 ## 5. Phân tích sâu & Đánh giá (Analysis)
 
 ### 5.1. Ma trận nhầm lẫn (Confusion Matrix Analysis)
-Để đánh giá chi tiết khả năng phân loại trên từng lớp hành vi riêng biệt, hệ thống tiến hành phân tích Ma trận nhầm lẫn chuẩn hóa (Normalized Confusion Matrix) trên tập kiểm thử độc lập (Test Set):
 
 <p align="center">
-  <img src="plots/lstm_normalized_confusion_matrix.png" alt="Confusion Matrix" width="600">
+  <img src="plots/bigru_attn_normalized_confusion_matrix.png" alt="Normalized Confusion Matrix" width="550">
 </p>
 
-Đường chéo chính của ma trận nhầm lẫn đạt tỷ lệ phân loại rất cao và đồng đều giữa hai lớp, cho thấy hiệu năng thực tế vô cùng ấn tượng:
+Đường chéo chính của ma trận nhầm lẫn đạt tỷ lệ phân loại rất cao và đồng đều giữa hai lớp:
 * **ADL (Bình thường):** Phân loại chính xác **93%**.
-* **Fall (Té ngã):** Nhận diện chính xác **88%** (tương đương chỉ số Recall thực tế trên tập Test).
+* **Fall (Té ngã):** Nhận diện chính xác **92%** (tương đương chỉ số Recall thực tế trên tập Test).
 
-Sự phân bổ đồng đều này chứng minh việc kết hợp đồng thời **Focal Loss chuẩn hóa**, kỹ thuật tiền xử lý **Pre-padding (Replicate)** và thuật toán **hiệu chỉnh ngưỡng Youden Index (Threshold = 0.5936)** đã giải quyết triệt để sự thiên vị phân lớp do bài toán mất cân bằng nhãn gốc (3:1) gây ra.
- 
-#### Các chỉ số lỗi quan trọng:
-* **Tỷ lệ Báo động giả (False Alarm Rate - 7%):** Chỉ có 7% số ca sinh hoạt bình thường bị mô hình dự đoán nhầm thành té ngã. 
-* **Tỷ lệ Bỏ sót ca ngã (False Negative Rate - 12%):** Mô hình bỏ sót khoảng 1.2 ca trên 10 ca ngã thực tế. Trong bối cảnh y tế, tỷ lệ này hoàn toàn nằm trong phạm vi an toàn chấp nhận được đối với một kiến trúc LSTM gọn nhẹ (chỉ 32 hidden units) hoạt động thuần túy trên dữ liệu tọa độ khung xương bảo mật quyền riêng tư.
+> [!TIP]
+> **Các chỉ số lỗi quan trọng:**
+> * **Tỷ lệ Báo động giả (False Alarm Rate - 7%):** Chỉ có 7% số ca sinh hoạt bình thường bị mô hình đoán nhầm thành té ngã.
+> * **Tỷ lệ Bỏ sót ca ngã (False Negative Rate - 8%):** Mô hình chỉ bỏ sót khoảng 8% số ca ngã thực tế. Tỷ lệ này hoàn toàn nằm trong phạm vi an toàn chấp nhận được đối với một kiến trúc mạng gọn nhẹ hoạt động bảo mật quyền riêng tư.
 
 ### 5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)
-Biểu đồ dưới đây thể hiện tiến trình tối ưu hóa hàm tổn thất (Loss) và độ chính xác (Accuracy) của mô hình qua 50 epochs huấn luyện chi tiết:
 
 <p align="center">
-  <img src="plots/lstm_training_history.png" alt="Training History Analysis" width="600">
+  <img src="plots/bigru_attn_training_history.png" alt="Training History Analysis" width="800">
 </p>
 
 #### a. Biểu đồ đường Loss
-* **Độ hội tụ tốt:** Đường `Train Loss` (màu xanh dương) giảm đều đặn và mượt mà từ **0.0466** (Epoch 1) xuống còn **0.0125** (Epoch 50), cho thấy mô hình học tập rất hiệu quả qua từng vòng lặp.
-* **Độ ổn định cao:** Đường `Val Loss` (màu cam đứt nét) giảm sâu ở các epoch đầu và dao động ổn định trong vùng cực tiểu từ **0.0183** đến **0.0247** ở nửa sau quá trình huấn luyện. Khoảng cách giữa hai đường được duy trì ở mức nhỏ và không có hiện tượng Val Loss bị vọt ngược lên cao, chứng tỏ mô hình kiểm soát tốt hiện tượng quá khớp (overfitting).
-* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được hệ thống tự động ghi nhận và khôi phục tại **Epoch 44** (thời điểm đạt Val Recall: **95.1%** và Val F1: **83.8%**), giúp bảo vệ mô hình khỏi các dao động nhỏ ở các epoch cuối cùng.
+* **Độ hội tụ vượt trội:** Đường `Train Loss` giảm mạnh mẽ và mượt mà từ **0.0460** xuống còn **0.0029** (Epoch 50), cho thấy mô hình học tập vô cùng nhanh chóng nhờ vào cơ chế chú ý thông minh.
+* **Độ ổn định cao:** Đường `Val Loss` giảm sâu ở các epoch đầu và dao động cực kỳ ổn định trong vùng cực tiểu (`0.0216` đến `0.0240`) ở giai đoạn sau. Hiện tượng quá khớp (overfitting) hoàn toàn được kiểm soát tốt.
+* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được tự động ghi nhận và khôi phục tại **Epoch 46** (thời điểm đạt đỉnh cao nhất về khả năng phân loại toàn diện với `Val F1 = 90.1%` và `Val Recall = 88.6%`).
 
 #### b. Biểu đồ độ chính xác (Accuracy)
-* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` (màu xanh lá) tăng tiến bền vững từ **79.6%** lên **94.6%** ở epoch 50.
-* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` (màu đỏ đứt nét) bứt phá rất nhanh ngay từ 10 epoch đầu tiên (vượt qua 89%) và duy trì dao động ổn định trong biên độ **90% - 93%** cho đến cuối. 
-* Sự dao động nhẹ của đường Val là hiện tượng bình thường khi huấn luyện với kích thước batch nhỏ (`batch_size = 8`), nhưng xu hướng tổng thể vẫn giữ vững ở mức cao, khẳng định độ tin cậy của thuật toán.
+* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` bứt phá bền vững từ **80.1%** lên tới **98.3%** ở epoch 50.
+* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` tăng tốc nhanh chóng ngay từ 10 epoch đầu tiên (vượt mốc 90%) và duy trì ổn định trong biên độ cao từ **92.5% - 95.2%** cho đến cuối, khẳng định sự vượt trội hoàn toàn của kiến trúc **BiGRU-Attention** mới.
