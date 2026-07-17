@@ -31,7 +31,24 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 | **1** | Fall (Té ngã) | 2,463 | 24.4% |
 | **Tổng** | | **10,091** | **100%** |
 
-> ⚠️ **Thách thức cốt lõi:** Sự chênh lệch **3:1** giữa hai lớp tạo ra bài toán **Imbalanced Classification** — đây là bài toán trung tâm cần giải quyết xuyên suốt pipeline xử lý.
+> **Thách thức cốt lõi:** Sự chênh lệch **3:1** giữa hai lớp tạo ra bài toán **Imbalanced Classification** — đây là bài toán trung tâm cần giải quyết xuyên suốt pipeline xử lý.
+
+### 2.1. Chiến lược phân chia dữ liệu (Data Splitting Strategy)
+
+Để đảm bảo tính khách quan và khả năng tổng quát hóa của hệ thống, toàn bộ bộ dữ liệu gồm **10,091 mẫu** được phân chia theo tỷ lệ vàng **70 : 15 : 15** bằng phương pháp phân tầng (**Stratified Split**). Phương pháp này giúp giữ nguyên tỷ lệ lệch nhãn ~3:1 (ADL vs Fall) đồng đều trên cả 3 tập dữ liệu:
+
+*   **Tập Huấn luyện (Train Set - 70%):** Dùng để cập nhật trọng số cho mô hình LSTM kết hợp kỹ thuật tăng cường dữ liệu *Skeleton Jittering*.
+*   **Tập Kiểm thử nội bộ (Validation Set - 15%):** Dùng để theo dõi quá trình hội tụ, kích hoạt cơ chế dừng sớm (*Early Stopping*) và tìm ngưỡng quyết định tối ưu (*Optimal Threshold*) bằng Youden Index.
+*   **Tập Kiểm thử độc lập (Test Set - 15%):** Hoàn toàn cô lập trong suốt quá trình huấn luyện và tối ưu tham số, chỉ được sử dụng một lần duy nhất để đánh giá hiệu năng thực tế cuối cùng của hệ thống trên môi trường khách quan.
+
+#### Bảng thống kê chi tiết số lượng mẫu sau phân chia:
+
+| Tập dữ liệu | Tỷ lệ phân chia | Số mẫu lớp ADL (Nhãn 0) | Số mẫu lớp Fall (Nhãn 1) | Tổng số mẫu |
+| :--- | :---: | :---: | :---: | :---: |
+| **Train Set** | 70.0% | 5,340 | 1,724 | **7,064** |
+| **Validation Set** | 15.0% | 1,144 | 369 | **1,513** |
+| **Test Set** | 15.0% | 1,144 | 370 | **1,514** |
+| **Tổng cộng** | **100%** | **7,628** | **2,463** | **10,091** |
 
 ---
 
