@@ -15,7 +15,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 1. ĐỌC CẤU HÌNH & KHỞI TẠO MODEL (ĐÃ SỬA ĐƯỜNG DẪN CHUẨN THEO ẢNH)
 # =============================================================
 try:
-    # ĐÃ SỬA: Khớp chính xác tên file có dấu cách và chữ viết hoa của bạn
     config_path = os.path.join(BASE_DIR, 'models', 'Best BigRU Attention Config.npy')
     best_config = np.load(config_path, allow_pickle=True).item()
     H_SIZE         = best_config['hidden_size']
@@ -51,7 +50,6 @@ classifier_model = BiGRUAttentionModel(
     input_size=102, hidden_size=H_SIZE, num_layers=N_LAYERS
 ).to(device)
 
-# ĐÃ SỬA: Khớp chính xác tên file trọng số pth có chứa dấu cách
 model_path = os.path.join(BASE_DIR, 'models', 'Fall Detection BigRU Model.pth')
 if os.path.exists(model_path):
     classifier_model.load_state_dict(torch.load(model_path, map_location=device))
@@ -211,7 +209,7 @@ def process_video(input_video_path, output_video_path):
 
     skeleton_buffer = deque(maxlen=MAX_LEN)
 
-    # Hệ thống lọc nhiễu Temporal Smoothing bằng cơ chế bỏ phiếu của bạn
+    # Hệ thống lọc nhiễu Temporal Smoothing bằng cơ chế bỏ phiếu 
     decision_buffer = deque(maxlen=8)
     VOTE_THRESHOLD  = 0.625
 
