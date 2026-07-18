@@ -31,7 +31,8 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
   - [3.1. Chuẩn hóa không gian (Spatial Normalization)](#31-chuẩn-hóa-không-gian-spatial-normalization)
   - [3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)](#32-trích-xuất-đặc-trưng-động-học-kinematic-feature-engineering)
   - [3.3. Xử lý mất cân bằng nhãn (Imbalanced Data Handling)](#33-xử-lý-mất-cân-bằng-nhãn-imbalanced-data-handling)
-  - [3.4. Chiến lược lựa chọn mô hình (Model Selection Pipeline)](#34-chiến-lược-lựa-chọn-mô-hình-model-selection-pipeline)
+  - [3.4. Cơ chế Chú ý Chi tiết (Feed-Forward Soft Attention Mechanism)](#34-cơ-chế-chú-y-chi-tiết-feed-forward-soft-attention-mechanism)
+  - [3.5. Chiến lược lựa chọn mô hình (Model Selection Pipeline)](#35-chiến-lược-lựa-chọn-mô-hình-model-selection-pipeline)
 - [4. Kết quả thực nghiệm (Experimental Results)](#4-kết-quả-thực-nghiệm-experimental-results)
   - [4.1. So sánh hiệu năng 5-Fold Cross Validation](#41-so-sánh-hiệu-năng-5-fold-cross-validation)
   - [4.2. Kết quả cấu hình tối ưu từ Grid Search](#42-kết-quả-cấu-hình-tối-ưu-từ-grid-search)
@@ -129,7 +130,27 @@ $$\text{Noise} \sim \mathcal{N}(0, 0.02)$$
 
 ---
 
-### 3.4. Chiến lược lựa chọn mô hình (Model Selection Pipeline)
+### 3.4. Cơ chế Chú ý Chi tiết (Feed-Forward Soft Attention Mechanism)
+
+Thay vì chỉ sử dụng trạng thái ẩn cuối cùng của mạng hồi quy, hệ thống tích hợp cơ chế **Feed-Forward Attention** (một dạng *Additive Attention* đơn giản hóa, hoạt động nội tại chuỗi dữ liệu). Phương pháp này giúp mô hình tự động chấm điểm và tập trung trọng số vào các khung hình chứa biến động thế năng cục bộ lớn nhất (giai đoạn mất thăng bằng hoặc va chạm thực tế).
+
+#### Tiến trình tính toán chi tiết:
+
+1. **Tính toán Điểm số chú ý (Attention Score):** Trạng thái ẩn tích hợp hai chiều của BiGRU tại mỗi thời điểm `t` là `h_t` được đưa qua một lớp tuyến tính để xác định điểm số thô `e_t`:
+   `e_t = W_a * h_t + b_a`
+   *(Trong đó, W_a và b_a lần lượt là trọng số và độ lệch có thể huấn luyện của lớp chú ý)*.
+
+2. **Chuẩn hóa Trọng số (Attention Weights):** Điểm số thô được đưa qua hàm Softmax dọc theo trục thời gian (Sequence Length) để tạo ra phân phối xác suất chuẩn hóa `α_t`:
+   `α_t = exp(e_t) / Σ(exp(e_k))`
+
+3. **Tổng hợp Vector ngữ cảnh (Context Vector):** Vector ngữ cảnh đại diện toàn diện `c` cho toàn chuỗi hành vi được tổng hợp bằng tổng có trọng số của các trạng thái ẩn qua thời gian:
+   `c = Σ(α_t * h_t)`
+
+Vector ngữ cảnh `c` chứa đựng những thông tin chắt lọc nhất của hành vi phân đoạn, kế tiếp sẽ được chuyển đến lớp tuyến tính cuối cùng để dự đoán xác suất té ngã. Kỹ thuật này giúp hệ thống loại bỏ triệt để các nhiễu thông tin không liên quan từ các khung hình tĩnh (trước hoặc sau khi ngã), đẩy mạnh độ nhạy (Recall) của toàn hệ thống.
+
+---
+
+### 3.5. Chiến lược lựa chọn mô hình (Model Selection Pipeline)
 
 * **Giai đoạn 1 — Lựa chọn kiến trúc (5-Fold Cross Validation):** Đánh giá khách quan 4 kiến trúc trên toàn bộ dữ liệu bằng phương pháp *Stratified K-Fold*: **BiGRU-Attention**, **LSTM**, **GRU**, **CNN-1D**. Kiến trúc sở hữu **Mean F1-Score cao nhất** sẽ được chọn.
 * **Giai đoạn 2 — Tối ưu siêu tham số (Grid Search):** Thực hiện tối ưu hóa cấu hình trên kiến trúc chiến thắng qua không gian tham số: `hidden_size: [32, 64]`, `num_layers: [1, 2]`, `lr: [0.001, 0.005]`. Model tốt nhất được xác định ngưỡng phân loại (threshold) bằng **Youden Index** trên Validation set trước khi đánh giá trên Test set độc lập.
