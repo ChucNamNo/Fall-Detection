@@ -22,7 +22,7 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 
 ---
 
-## 📑 Mục lục
+## Mục lục
 - [1. Mục tiêu dự án (Objective)](#1-mục-tiêu-dự-án-objective)
 - [2. Bộ dữ liệu huấn luyện (Dataset)](#2-bộ-dữ-liệu-huấn-luyện-dataset)
   - [2.1. Chiến lược phân chia dữ liệu (Data Splitting Strategy)](#21-chiến-lược-phân-chia-dữ-liệu-data-splitting-strategy)
