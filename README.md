@@ -40,7 +40,6 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 - [5. Phân tích chi tiết & Đánh giá (Analysis)](#5-phân-tích-chi-tiết--đánh-giá-analysis)
   - [5.1. Ma trận nhầm lẫn (Confusion Matrix Analysis)](#51-ma-trận-nhầm-lẫn-confusion-matrix-analysis)
   - [5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)](#52-biểu-đồ-lịch-sử-huấn-luyện-training-history-analysis)
-  - [5.3. Thảo luận học thuật về Ablation Study & Cơ chế Class Collapse](#53-thảo-luận-học-thuật-về-ablation-study--cơ-chế-class-collapse)
 
 ---
 
@@ -281,16 +280,3 @@ Với ngưỡng phân loại tối ưu J = 0.4577 xác định từ tập Valida
 #### b. Diễn biến độ chính xác (Accuracy)
 * **Train Accuracy:** Tăng từ 80.1% lên 98.3% ở Epoch 50.
 * **Validation Accuracy:** Đạt ngưỡng ổn định trong khoảng 92.5% - 95.2%.
-
----
-
-### 5.3. Thảo luận học thuật về Ablation Study & Cơ chế Class Collapse
-
-1. **Phân tích lựa chọn Focal Loss so với BCE (Mẫu 1 vs Mẫu 6):**
-   Mặc dù hàm tổn thất Standard BCE đạt chỉ số F1 = 86.70%, nhưng chỉ số **Recall lại giảm mạnh xuống 82.34%** (bỏ sót 17.66% trường hợp ngã). Trong bài toán an toàn y tế, lỗi bỏ sót té ngã (False Negative) mang lại rủi ro cao hơn lỗi cảnh báo nhầm (False Positive). Việc kết hợp Focal Loss (α = 0.75, γ = 2.0) và ngưỡng Youden Index nâng Recall lên **91.62%**, giúp tối ưu hóa khả năng phát hiện sự cố.
-
-2. **Vai trò của cơ chế Soft Attention (Mẫu 1 vs Mẫu 2):**
-   Hành vi té ngã thường chỉ diễn ra trong khoảng 3–5 khung hình va chạm trọng yếu. Khi cắt bỏ cơ chế Attention, trạng thái ẩn cuối cùng bị ảnh hưởng bởi các khung hình tĩnh phía sau, làm F1-Score giảm 2.82% và Recall giảm từ 91.62% xuống 86.96%.
-
-3. **Giải thích hiện tượng Class Collapse trên CNN-1D:**
-   Khác với các kiến trúc hồi quy (GRU, LSTM) có các cổng nhớ trạng thái qua thời gian, mô hình CNN-1D xử lý trích xuất đặc trưng cục bộ qua phép cuộn. Khi tỷ lệ lệch nhãn là 3:1 và γ ≤ 0.5, gradient từ lớp đa số ADL áp đảo hoàn toàn quá trình cập nhật trọng số, làm đầu ra Sigmoid bị bão hòa về phía nhãn 0. Việc tăng hệ số γ ≥ 1.0 làm gia tăng tỷ trọng phạt cho các mẫu khó, giúp gradient vượt qua điểm bão hòa và đưa mô hình thoát khỏi trạng thái suy biến.
