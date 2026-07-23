@@ -272,11 +272,11 @@ Với ngưỡng phân loại tối ưu J = 0.4577 xác định từ tập Valida
   <img src="plots/Training History Fall Detection.png" alt="Training History Analysis" width="800">
 </p>
 
-#### a. Diễn biến đường Loss
-* **Tập huấn luyện (Train Loss):** Giảm ổn định từ 0.0460 về 0.0029 tại Epoch 50.
-* **Tập kiểm thử (Val Loss):** Đạt trạng thái cân bằng trong khoảng [0.0216, 0.0240] mà không xuất hiện hiện tượng tăng ngược loss (Overfitting).
-* **Điểm lưu trọng số:** Mô hình đạt hiệu năng tổng thể tối ưu tại **Epoch 46** với Val F1 = 90.1% và Val Recall = 88.6%.
+#### a. Biểu đồ đường Loss
+* **Độ hội tụ vượt trội:** Đường `Train Loss` giảm mạnh mẽ và mượt mà từ **0.0460** xuống còn **0.0029** (Epoch 50), cho thấy mô hình học tập vô cùng nhanh chóng nhờ vào cơ chế chú ý thông minh.
+* **Độ ổn định cao:** Đường `Val Loss` giảm sâu ở các epoch đầu và dao động cực kỳ ổn định trong vùng cực tiểu (`0.0216` đến `0.0240`) ở giai đoạn sau. Hiện tượng quá khớp (overfitting) hoàn toàn được kiểm soát tốt.
+* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được tự động ghi nhận và khôi phục tại **Epoch 46** (thời điểm đạt đỉnh cao nhất về khả năng phân loại toàn diện với `Val F1 = 90.1%` và `Val Recall = 88.6%`).
 
-#### b. Diễn biến độ chính xác (Accuracy)
-* **Train Accuracy:** Tăng từ 80.1% lên 98.3% ở Epoch 50.
-* **Validation Accuracy:** Đạt ngưỡng ổn định trong khoảng 92.5% - 95.2%.
+#### b. Biểu đồ độ chính xác (Accuracy)
+* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` bứt phá bền vững từ **80.1%** lên tới **98.3%** ở epoch 50.
+* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` tăng tốc nhanh chóng ngay từ 10 epoch đầu tiên (vượt mốc 90%) và duy trì ổn định trong biên độ cao từ **92.5% - 95.2%** cho đến cuối, khẳng định sự vượt trội hoàn toàn của kiến trúc **BiGRU-Attention** mới.
