@@ -217,7 +217,7 @@ Dựa trên kết quả phân tích ma trận thực nghiệm 5x5 của mô hìn
 
 1. **Lý do lựa chọn α = 0.75 (Tỷ lệ phạt tương thích với phân phối nhãn):**
    * Do tỷ lệ mất cân bằng dữ liệu gốc là **3:1** (ADL 75.6% vs Fall 24.4%), việc gán α = 0.75 tạo ra tỷ lệ phạt mất mát 3:1 nghiêng về lớp té ngã (α1 / α0 = 0.75 / 0.25 = 3). 
-   * Mức phạt này cân bằng đáng kể lực kéo gradient giữa hai lớp, giúp duy trì chỉ số **Recall luôn đạt trên 90%** – chỉ số an toàn bắt buộc đối với ứng dụng giám sát y tế.
+   * Mức phạt này cân bằng đáng kể lực kéo gradient giữa hai lớp, giúp duy trì chỉ số **Recall luôn đạt mức cao** – chỉ số an toàn bắt buộc đối với ứng dụng giám sát y tế.
 
 2. **Lý do lựa chọn γ = 2.0 (Phân tích độ ổn định lân cận siêu tham số):**
    * *Độ nhạy và rủi ro quá khớp tại γ = 0.2:* Mặc dù γ = 0.2 đạt đỉnh F1 cục bộ trên tập Validation (87.14%), hiệu năng tại hàng γ = 0.2 biến động rất mạnh khi α thay đổi (chỉ đạt 76.32% tại α = 0.10 và tụt xuống 78.32% tại α = 0.90). Sự biến động gắt này cho thấy cực đại tại γ = 0.2 là một "cực trị nhọn" (sharp minimum), mang rủi ro quá khớp (overfitting) cao vào tập Validation.
