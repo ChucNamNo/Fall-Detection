@@ -230,25 +230,34 @@ Dựa trên kết quả phân tích ma trận thực nghiệm 5x5 của mô hìn
 
 Thực nghiệm **Ablation Study** được thực hiện trên tập **Validation Set** nhằm khảo sát định lượng đóng góp của từng thành phần kỹ thuật (kiến trúc mạng BiGRU, cơ chế Attention, đặc trưng động học Kinematics, và hàm mất mát Focal Loss) đối với hiệu năng chung của mô hình:
 
-#### Bảng kết quả Nghiên cứu Cắt bỏ thành phần (Đánh giá trên Validation Set với ngưỡng mặc định 0.5):
+---
 
-| STT | Biến thể Cấu hình Thử nghiệm | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | Tác động khi cắt bỏ / Thay thế |
-| :---: | :--- | :---: | :---: | :---: | :---: | :--- |
-| **1** | **BiGRU + Attention + Kinematics** | **92.98** | **87.43** | **83.15** | **85.24** | **Mô hình baseline đầy đủ (Ngưỡng mặc định 0.5)** |
-| **2** | **BiGRU (Bỏ Attention)** | 91.19 | 79.01 | 86.96 | 82.79 | F1 giảm **-2.45%**: Precision giảm mạnh xuống 79.01%. |
-| **3** | **LSTM + Attention** | 91.66 | 80.25 | 87.23 | 83.59 | F1 giảm **-1.65%**: Kiến trúc LSTM học chuỗi ít tối ưu hơn BiGRU. |
-| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.25 | 84.76 | 83.15 | 83.95 | F1 giảm **-1.29%**: Suy giảm độ chính xác tổng thể. |
-| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 92.25 | 80.54 | 89.95 | 84.98 | F1 giảm **-0.26%**: Precision giảm do thiếu thông tin gia tốc rơi. |
-| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | 82.34 | 86.70 | F1 đạt 86.70% ở ngưỡng 0.5, nhưng Recall thấp hơn (82.34%) |
+### Bảng kết quả thực nghiệm
 
-Phân tích chi tiết đóng góp của các thành phần (trên Validation Set):
-* **Cơ chế Attention (Cấu hình 1 vs 2)**: Khi loại bỏ Attention khỏi BiGRU, chỉ số F1-Score giảm từ 85.24% xuống 82.79% (-2.45%), trong đó Precision giảm đáng kể từ 87.43% xuống 79.01% (-8.42%). Điều này chứng minh cơ chế Attention giúp mô hình lọc nhiễu hiệu quả và tập trung trọng số vào các khung hình chứa khoảnh khắc va chạm trọng yếu.
+| STT | Biến thể Cấu hình Thử nghiệm | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | Parameters | FLOPs (M) | Tác động khi cắt bỏ / Thay thế |
+| :-: | :--- | :-: | :-: | :-: | :-: | :-: | :-: | :--- |
+| **1** | **PROPOSED (BiGRU + Attention + Kinematics)** | **92.98** | **87.43** | **83.15** | **85.24** | **139,266** | **4.5100** | **Mô hình đề xuất đầy đủ (Baseline)** |
+| **2** | **BiGRU (Bỏ Attention)** | 91.19 | 79.01 | 86.96 | 82.79 | 139,137 | 4.5059 | F1 giảm **-2.45%**: Precision giảm mạnh xuống 79.01%. |
+| **3** | **LSTM + Attention** | 91.66 | 80.25 | 87.23 | 83.59 | 185,602 | 6.0009 | F1 giảm **-1.65%**: Tốn thêm ~33.3% FLOPs và Params. |
+| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.25 | 84.76 | 83.15 | 83.95 | 185,473 | 5.9968 | F1 giảm **-1.29%**: Tốn nhiều tài nguyên nhưng kém hiệu quả. |
+| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 92.25 | 80.54 | 89.95 | 84.98 | 113,154 | 3.6744 | F1 giảm **-0.26%**: Giảm 18.7% FLOPs nhưng Precision bị giảm mạnh. |
+| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | 82.34 | 86.70 | 139,266 | 4.5100 | F1 đạt 86.70% ở ngưỡng 0.5, nhưng Recall thấp hơn (82.34%). |
 
-* **Kiến trúc BiGRU so với LSTM (Cấu hình 1 vs 3)**: Thay thế BiGRU bằng LSTM (+ Attention) làm F1-Score giảm xuống 83.59% (-1.65%), cho thấy khả năng học chuỗi hai chiều của BiGRU khai thác ngữ cảnh thời gian tốt hơn trong bài toán té ngã.
+---
 
-* **Đặc trưng Động học Kinematics (Cấu hình 1 vs 5)**: Khi loại bỏ Vận tốc và Gia tốc (chỉ dùng Pose thô 34 dims), F1-Score giảm từ 85.24% xuống 84.98% (-0.26%) và Precision giảm từ 87.43% xuống 80.54% (-6.89%). Việc bổ sung 68 chiều Kinematics giúp mô hình xác định chính xác các pha biến thiên vận tốc đột ngột.
+### Phân tích đóng góp & Độ phức tạp tính toán
 
-* **Hàm mất mát Focal Loss (Cấu hình 1 vs 6)**: Ở ngưỡng phân loại mặc định 0.5, Standard BCE cho F1-Score cao hơn (86.70%) nhưng Recall lại thấp hơn (82.34%). Việc sử dụng Focal Loss giúp mô hình phân tách xác suất tốt hơn khi kết hợp với ngưỡng Youden Index tối ưu ở bước đánh giá tập Test.
+- **Cơ chế Attention (Cấu hình 1 vs 2):**
+  Loại bỏ khối Attention khỏi BiGRU khiến F1-Score giảm từ **85.24%** xuống **82.79%** (-2.45%), đặc biệt Precision sụt giảm mạnh từ **87.43%** xuống **79.01%** (-8.42%). Đáng chú ý, cơ chế Attention chỉ bổ sung **129 parameters** (139,266 vs 139,137) và tiêu tốn thêm một lượng chi phí tính toán cực kỳ nhỏ (**0.0041 MFLOPs**). Điều này chứng minh Attention mang lại hiệu quả nâng cao độ chính xác vượt trội với mức chi phí tài nguyên gần như không đáng kể.
+
+- **So sánh BiGRU và LSTM (Cấu hình 1 vs 3):**
+  Khi thay thế BiGRU bằng LSTM, F1-Score giảm xuống **83.59%** (-1.65%). Xét về mặt tài nguyên phần cứng, kiến trúc LSTM tốn nhiều hơn **33.27% số lượng Parameters** (185,602 vs 139,266) và **33.06% chi phí tính toán FLOPs** (6.0009M vs 4.5100M). Kết quả khẳng định BiGRU là sự lựa chọn tối ưu hơn hẳn LSTM cả về độ chính xác lẫn tính gọn nhẹ khi xử lý chuỗi thời gian ngắn.
+
+- **Đặc trưng Động học Kinematics (Cấu hình 1 vs 5):**
+  Khi cắt bỏ thông tin Vận tốc và Gia tốc (chuyển từ 102 chiều xuống 34 chiều pose thô), số lượng FLOPs giảm **18.5%** (từ 4.5100M xuống 3.6744M) và tham số giảm xuống còn 113,154. Tuy nhiên, Precision bị giảm mạnh từ **87.43%** xuống **80.54%** (-6.89%), làm gia tăng tỷ lệ báo động giả (False Positives). Việc đánh đổi thêm **0.8356 MFLOPs** để tích hợp Kinematics hoàn toàn đáng giá nhằm đảm bảo tính ổn định của hệ thống.
+
+- **Hàm mất mát Focal Loss (Cấu hình 1 vs 6):**
+  Thay thế Focal Loss bằng Standard BCE duy trì nguyên vẹn tham số (139,266) và FLOPs (4.5100M). Mặc dù ở ngưỡng mặc định 0.5, Standard BCE đạt F1-Score cao hơn (86.70%), nhưng Recall lại sụt giảm xuống mức thấp nhất (**82.34%**). Đối với bài toán té ngã, Recall là chỉ số ưu tiên hàng đầu để tránh bỏ sót các ca té ngã nguy hiểm; do đó, Focal Loss vẫn là giải pháp phân tách xác suất hiệu quả hơn.
 
 ---
 
