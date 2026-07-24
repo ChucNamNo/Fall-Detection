@@ -147,13 +147,22 @@ Vector `c` tổng hợp thông tin từ các khung hình chứa biến động �
 ## 4. Kết quả thực nghiệm & Phân tích (Experimental Results)
 
 ### 4.1. So sánh hiệu năng 5-Fold Cross Validation
-| Kiến trúc Mô hình | Mean Accuracy | Mean Recall | Mean F1-Score | Trạng thái |
-| :--- | :---: | :---: | :---: | :---: |
-| **BiGRU-Attention (Optimized)** | **92.80%** | **90.78%** | **86.02%** | **Được chọn** |
-| **LSTM** | 91.07% | 93.34% | 83.63% | Loại |
-| **GRU** | 90.80% | 92.49% | 83.13% | Loại |
-| **CNN-1D** | 83.48% | 88.67% | 72.44% | Loại |
+Để đánh giá toàn diện các kiến trúc mạng học sâu, báo cáo không chỉ xem xét các chỉ số độ chính xác (Accuracy, Recall, F1-Score) mà còn phân tích mối quan hệ đánh đổi (trade-off) giữa hiệu năng nhận dạng và độ phức tạp tính toán (Số lượng tham số học được và chi phí FLOPs cho một chuỗi 16 frames đầu vào).
 
+| Mô hình (Model) | Mean Accuracy | Mean Recall | Mean F1-Score | Parameters | FLOPs (16 frames) | Trạng thái |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **BiGRU-Attention** | **93.51%** | **89.89%** | **87.13%** | **139,266** | **4.51 MFLOPs** | **Được chọn** |
+| **GRU** | 91.93% | 90.74% | 84.64% | 57,281 | 1.86 MFLOPs | Bị loại |
+| **LSTM** | 90.73% | 92.57% | 83.02% | 76,353 | 2.47 MFLOPs | Bị loại |
+| **CNN-1D** | 83.41% | 87.78% | 72.19% | 19,713 | 0.63 MFLOPs | Bị loại |
+
+**Đánh giá:**
+* **Hiệu năng nhận dạng tối ưu nhất — BiGRU-Attention**: Mô hình BiGRU-Attention đạt chỉ số tổng hợp tốt nhất với F1-Score = 87.13% và Accuracy = 93.51% (tăng tương ứng 1.11% F1-Score và 0.71% Accuracy so với kết quả thử nghiệm trước). Việc kết hợp cơ chế Attention cùng GRU hai chiều giúp mô hình lọc nhiễu tốt và tập trung vào các chuyển động quan trọng trong chuỗi dữ liệu xương (skeleton). Tuy có dung lượng tham số lớn nhất (139,266 parameters) và chi phí 4.51 MFLOPs, mức tài nguyên này vẫn đủ nhẹ để chạy mượt mà theo thời gian thực trên các thiết bị Edge AI thông thường.
+* **Sự dịch chuyển thứ hạng giữa GRU và LSTM**: Nhờ tối ưu hóa quy trình, GRU vượt qua LSTM để vươn lên vị trí thứ 2 với F1-Score = 84.64% (cao hơn 1.62% so với LSTM). Xét về mặt chi phí tính toán, GRU thể hiện ưu thế vượt trội hơn hẳn LSTM.
+* **Mô hình siêu nhẹ — CNN-1D**: Mặc dù CNN-1D có chi phí tính toán cực kỳ thấp (chỉ 19,713 parameters và 0.63 MFLOPs), hiệu năng nhận dạng của nó khá khiêm tốn (F1-Score = 72.19%). Điều này cho thấy các lớp tích chập 1 chiều thuần túy khó bắt trọn được sự phụ thuộc chuỗi theo thời gian (temporal dependency) dài bằng các kiến trúc học chuỗi chuyên dụng dạng RNN.
+
+Mô hình BiGRU-Attention là lựa chọn tối ưu nhất cho bài toán phát hiện té ngã. Mặc dù chi phí FLOPs tăng gấp ~2.4 lần so với GRU đơn thuần, mức bù đắp +2.49% F1-Score mang lại giá trị rất lớn trong việc giảm thiểu tối đa các tình huống báo động giả (False Positives).
+  
 ---
 
 ### 4.2. Khảo sát Ma trận Siêu tham số Focal Loss (Alpha x Gamma)
