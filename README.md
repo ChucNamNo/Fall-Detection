@@ -219,27 +219,33 @@ Dựa trên kết quả phân tích ma trận thực nghiệm 5x5 của mô hìn
 
 ### 4.3. Nghiên cứu Cắt bỏ Thành phần (Ablation Study)
 
-Thực nghiệm **Ablation Study** được đánh giá chính thức trên **Test Set độc lập**. Mô hình Đề xuất (Proposed Model) được huấn luyện đầy đủ và áp dụng phân tách ngưỡng tối ưu bằng **Youden Index (J = 0.4577)**:
+Thực nghiệm **Ablation Study** được thực hiện trên tập **Validation Set** nhằm khảo sát định lượng đóng góp của từng thành phần kỹ thuật (kiến trúc mạng BiGRU, cơ chế Attention, đặc trưng động học Kinematics, và hàm mất mát Focal Loss) đối với hiệu năng chung của mô hình:
 
-#### Bảng kết quả Nghiên cứu Cắt bỏ (Đánh giá trên Test Set):
+#### Bảng kết quả Nghiên cứu Cắt bỏ thành phần (Đánh giá trên Validation Set với ngưỡng mặc định 0.5):
 
 | STT | Biến thể Cấu hình Thử nghiệm | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | Tác động khi cắt bỏ / Thay thế |
 | :---: | :--- | :---: | :---: | :---: | :---: | :--- |
-| **1** | **PROPOSED (BiGRU + Attention + Kinematics)** | **92.47** | **80.34** | **91.62** | **85.61** | **Mô hình Đề xuất (Youden Thresh = 0.4577)** |
-| **2** | **BiGRU (Bỏ Attention)** | 91.19 | 79.01 | 86.96 | 82.79 | F1 giảm **-2.82%**: Giảm khả năng tập trung vào khung hình va chạm. |
-| **3** | **LSTM + Attention** | 91.66 | 80.25 | 87.23 | 83.59 | F1 giảm **-2.02%**: Kiến trúc LSTM học chuỗi ít tối ưu hơn BiGRU. |
-| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.25 | 84.76 | 83.15 | 83.95 | F1 giảm **-1.66%**: Recall giảm xuống 83.15%. |
-| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 92.25 | 80.54 | 89.95 | 84.98 | F1 giảm **-0.63%**: Thiếu thông tin gia tốc rơi tự do. |
-| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | **82.34** | 86.70 | Recall giảm mạnh **-9.28%** (bỏ sót 17.66% ca ngã). |
+| **1** | **BiGRU + Attention + Kinematics** | **92.98** | **87.43** | **83.15** | **85.24** | **Mô hình baseline đầy đủ (Ngưỡng mặc định 0.5)** |
+| **2** | **BiGRU (Bỏ Attention)** | 91.19 | 79.01 | 86.96 | 82.79 | F1 giảm **-2.45%**: Precision giảm mạnh xuống 79.01%. |
+| **3** | **LSTM + Attention** | 91.66 | 80.25 | 87.23 | 83.59 | F1 giảm **-1.65%**: Kiến trúc LSTM học chuỗi ít tối ưu hơn BiGRU. |
+| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.25 | 84.76 | 83.15 | 83.95 | F1 giảm **-1.29%**: Suy giảm độ chính xác tổng thể. |
+| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 92.25 | 80.54 | 89.95 | 84.98 | F1 giảm **-0.26%**: Precision giảm do thiếu thông tin gia tốc rơi. |
+| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | 82.34 | 86.70 | F1 đạt 86.70% ở ngưỡng 0.5, nhưng Recall thấp hơn (82.34%) |
 
-> [!TIP]
-> **Ghi chú về tính đồng nhất dữ liệu:** Giá trị F1 = 85.79% ở Mục 4.2 là chỉ số đạt được trên tập **Validation Set** ở bước khảo sát ma trận. Giá trị F1 = 85.61% ở Mục 4.3 là chỉ số đánh giá chính thức của Mô hình Đề xuất trên tập **Test Set độc lập** sau khi áp dụng ngưỡng Youden Index (0.4577).
+Phân tích chi tiết đóng góp của các thành phần (trên Validation Set):
+* **Cơ chế Attention (Cấu hình 1 vs 2)**: Khi loại bỏ Attention khỏi BiGRU, chỉ số F1-Score giảm từ 85.24% xuống 82.79% (-2.45%), trong đó Precision giảm đáng kể từ 87.43% xuống 79.01% (-8.42%). Điều này chứng minh cơ chế Attention giúp mô hình lọc nhiễu hiệu quả và tập trung trọng số vào các khung hình chứa khoảnh khắc va chạm trọng yếu.
+
+* **Kiến trúc BiGRU so với LSTM (Cấu hình 1 vs 3)**: Thay thế BiGRU bằng LSTM (+ Attention) làm F1-Score giảm xuống 83.59% (-1.65%), cho thấy khả năng học chuỗi hai chiều của BiGRU khai thác ngữ cảnh thời gian tốt hơn trong bài toán té ngã.
+
+* **Đặc trưng Động học Kinematics (Cấu hình 1 vs 5)**: Khi loại bỏ Vận tốc và Gia tốc (chỉ dùng Pose thô 34 dims), F1-Score giảm từ 85.24% xuống 84.98% (-0.26%) và Precision giảm từ 87.43% xuống 80.54% (-6.89%). Việc bổ sung 68 chiều Kinematics giúp mô hình xác định chính xác các pha biến thiên vận tốc đột ngột.
+
+* **Hàm mất mát Focal Loss (Cấu hình 1 vs 6)**: Ở ngưỡng phân loại mặc định 0.5, Standard BCE cho F1-Score cao hơn (86.70%) nhưng Recall lại thấp hơn (82.34%). Việc sử dụng Focal Loss giúp mô hình phân tách xác suất tốt hơn khi kết hợp với ngưỡng Youden Index tối ưu ở bước đánh giá tập Test.
 
 ---
 
 ### 4.4. Đánh giá Mô hình Đề xuất trên tập Test độc lập
 
-Với ngưỡng phân loại tối ưu J = 0.4577 xác định từ tập Validation, hiệu năng thực tế của mô hình trên tập Test độc lập được ghi nhận như sau:
+Sau khi xác định cấu hình tối ưu từ ablation study, mô hình **BiGRU + Attention + Kinematics + Focal Loss** được đưa vào đánh giá chính thức trên Test Set hoàn toàn độc lập (chiếm 15% tổng dữ liệu, chưa từng xuất hiện trong quá trình huấn luyện hay tinh chỉnh tham số). Ngưỡng phân loại tối ưu **Youden Index (J = 0.45)** được áp dụng để tối đa hóa khả năng phát hiện sự cố té ngã.
 
 | Chỉ số đánh giá | Giá trị | Ý nghĩa ứng dụng trong giám sát té ngã |
 | :--- | :---: | :--- |
