@@ -167,62 +167,64 @@ Mô hình BiGRU-Attention là lựa chọn tối ưu nhất cho bài toán phát
 
 ### 4.2. Khảo sát Ma trận Siêu tham số Focal Loss (Alpha x Gamma)
 
-Thực nghiệm tiến hành quét ma trận giữa γ trong dải [0.1, 0.2, 0.5, 1.0, 2.0] và α trong dải [0.10, 0.25, 0.50, 0.75, 0.90] trên tập **Validation Set** đối với 4 kiến trúc (cố định Hidden Size = 64, Layers = 2, LR = 0.001).
+Thực nghiệm tiến hành quét ma trận giữa $\gamma$ trong dải [0.1, 0.2, 0.5, 1.0, 2.0] và $\alpha$ trong dải [0.10, 0.25, 0.50, 0.75, 0.90] trên tập **Validation Set** đối với 4 kiến trúc (cố định Hidden Size = 64, Layers = 2, LR = 0.001).
 
 #### Kết quả Ma trận F1-Score (%) trên tập Validation:
 
 ##### a. Mô hình BiGRU-Attention
 | γ \ α | α = 0.10 | α = 0.25 | α = 0.50 | α = 0.75 | α = 0.90 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **γ = 0.1** | 78.06% | 81.60% | 85.84% | 84.73% | 81.42% |
-| **γ = 0.2** | 76.32% | 83.09% | 85.26% | **87.14%** | 78.32% |
-| **γ = 0.5** | 76.14% | 84.70% | 84.37% | 83.73% | 81.60% |
-| **γ = 1.0** | 77.93% | 82.65% | 86.36% | 84.84% | 84.83% |
-| **γ = 2.0** | 79.04% | 85.02% | 85.75% | **85.79%** | 83.43% |
+| **γ = 0.1** | 78.06% | 82.14% | 85.47% | 85.56% | 82.41% |
+| **γ = 0.2** | 77.81% | 81.79% | 85.39% | 86.70% | 83.17% |
+| **γ = 0.5** | 77.27% | 82.26% | 87.39% | 87.18% | 83.37% |
+| **γ = 1.0** | 76.05% | 81.28% | 86.49% | 86.12% | 82.77% |
+| **γ = 2.0** | 77.35% | 81.80% | **87.59%** | 85.24% | 83.40% |
 
 ##### b. Mô hình LSTM
 | γ \ α | α = 0.10 | α = 0.25 | α = 0.50 | α = 0.75 | α = 0.90 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **γ = 0.1** | 75.29% | 83.74% | 85.22% | 83.35% | 79.35% |
-| **γ = 0.2** | 74.25% | 83.56% | 83.93% | 81.76% | 79.21% |
-| **γ = 0.5** | 71.53% | 83.99% | 85.80% | 83.99% | 80.05% |
-| **γ = 1.0** | 74.30% | 80.37% | 84.78% | 82.84% | 78.52% |
-| **γ = 2.0** | 73.50% | 81.18% | **86.00%** | 81.94% | 78.81% |
+| **γ = 0.1** | 75.54% | 81.39% | **85.17%** | 82.52% | 80.39% |
+| **γ = 0.2** | 75.71% | 82.33% | 84.59% | 82.86% | 78.87% |
+| **γ = 0.5** | 71.94% | 81.28% | 85.07% | 84.31% | 80.09% |
+| **γ = 1.0** | 74.07% | 83.41% | 84.62% | 85.03% | 81.32% |
+| **γ = 2.0** | 74.83% | 83.43% | 84.71% | 82.38% | 80.09% |
 
 ##### c. Mô hình GRU
 | γ \ α | α = 0.10 | α = 0.25 | α = 0.50 | α = 0.75 | α = 0.90 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **γ = 0.1** | 72.85% | 79.44% | 83.23% | 82.43% | 78.85% |
-| **γ = 0.2** | 76.11% | 78.74% | 83.48% | 82.28% | 78.41% |
-| **γ = 0.5** | 76.87% | 81.06% | 84.43% | 82.25% | 77.19% |
-| **γ = 1.0** | 75.99% | 80.00% | **85.99%** | 81.30% | 78.25% |
-| **γ = 2.0** | 71.38% | 81.53% | 83.04% | 82.45% | 77.29% |
+| **γ = 0.1** | 73.56% | 81.29% | 83.48% | 83.24% | 78.52% |
+| **γ = 0.2** | 74.04% | 79.33% | 84.64% | 83.45% | 79.09% |
+| **γ = 0.5** | 75.66% | 80.83% | 82.72% | 84.95% | 77.84% |
+| **γ = 1.0** | 75.04% | 80.95% | 84.15% | 84.31% | 77.92% |
+| **γ = 2.0** | 73.37% | 81.37% | **85.26%** | 83.63% | 78.93% |
 
 ##### d. Mô hình CNN-1D
 | γ \ α | α = 0.10 | α = 0.25 | α = 0.50 | α = 0.75 | α = 0.90 |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **γ = 0.1** | 15.88% | 0.00% | 47.65% | 0.00% | 0.00% |
-| **γ = 0.2** | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% |
-| **γ = 0.5** | 0.00% | 32.05% | 0.00% | 0.00% | 0.00% |
-| **γ = 1.0** | 44.91% | 58.24% | 69.47% | **71.21%** | 66.80% |
-| **γ = 2.0** | 41.28% | 60.55% | 69.91% | 71.04% | 66.60% |
+| **γ = 0.1** | 0.00% | 31.86% | 0.00% | 0.00% | 0.00% |
+| **γ = 0.2** | 0.00% | 32.30% | 0.00% | 0.00% | 0.00% |
+| **γ = 0.5** | 0.00% | 34.50% | 0.00% | 0.00% | 0.00% |
+| **γ = 1.0** | 42.77% | 57.84% | 70.74% | **71.51%** | 66.67% |
+| **γ = 2.0** | 42.53% | 57.84% | 69.69% | 70.44% | 66.26% |
 
 > [!NOTE]
 > **Ghi chú về số liệu thực nghiệm:**
-> Số liệu trong Mục 4.2 được đánh giá trên **Validation Set** trong quá trình tìm kiếm không gian siêu tham số. Sự chênh lệch giữa chỉ số Validation (85.79%) và chỉ số Test chính thức (85.61%) phản ánh quá trình kiểm thử độc lập khách quan.
+> Số liệu trong Mục 4.2 được đánh giá trên **Validation Set** trong quá trình tìm kiếm không gian siêu tham số. Điểm F1-Score đạt giá trị cao nhất là **87.59%** trên mô hình đề xuất **BiGRU-Attention** tại cấu hình $(\alpha = 0.50, \gamma = 2.0)$.
 
-#### 4.2.1. Kết luận & Lý do lựa chọn bộ siêu tham số Focal Loss (α = 0.75, γ = 2.0)
+---
 
-Dựa trên kết quả phân tích ma trận thực nghiệm 5x5 của mô hình đề xuất `BiGRU-Attention`, hệ thống chính thức lựa chọn bộ siêu tham số **α = 0.75 và γ = 2.0**. Lựa chọn này dựa trên các luận điểm khoa học về tính ổn định và khả năng tổng quát hóa:
+#### 4.2.1. Kết luận & Lý do lựa chọn bộ siêu tham số Focal Loss (α = 0.50, γ = 2.0)
 
-1. **Lý do lựa chọn α = 0.75 (Tỷ lệ phạt tương thích với phân phối nhãn):**
-   * Do tỷ lệ mất cân bằng dữ liệu gốc là **3:1** (ADL 75.6% vs Fall 24.4%), việc gán α = 0.75 tạo ra tỷ lệ phạt mất mát 3:1 nghiêng về lớp té ngã (α1 / α0 = 0.75 / 0.25 = 3). 
-   * Mức phạt này cân bằng đáng kể lực kéo gradient giữa hai lớp, giúp duy trì chỉ số **Recall luôn đạt mức cao** – chỉ số an toàn bắt buộc đối với ứng dụng giám sát y tế.
+Dựa trên kết quả phân tích ma trận thực nghiệm 5x5 của mô hình đề xuất `BiGRU-Attention`, hệ thống chính thức lựa chọn bộ siêu tham số **α = 0.50 và γ = 2.0**. Lựa chọn này dựa trên các luận điểm khoa học về hiệu năng đỉnh, tính ổn định vùng và khả năng tổng quát hóa:
 
-2. **Lý do lựa chọn γ = 2.0 (Phân tích độ ổn định lân cận siêu tham số):**
-   * *Độ nhạy và rủi ro quá khớp tại γ = 0.2:* Mặc dù γ = 0.2 đạt đỉnh F1 cục bộ trên tập Validation (87.14%), hiệu năng tại hàng γ = 0.2 biến động rất mạnh khi α thay đổi (chỉ đạt 76.32% tại α = 0.10 và tụt xuống 78.32% tại α = 0.90). Sự biến động gắt này cho thấy cực đại tại γ = 0.2 là một "cực trị nhọn" (sharp minimum), mang rủi ro quá khớp (overfitting) cao vào tập Validation.
-   * *Độ ổn định vùng và tính tổng quát hóa tại γ = 2.0:* Tại hàng γ = 2.0, F1-Score của BiGRU-Attention duy trì độ phẳng và ổn định bền vững trên dải α rộng từ 0.25 đến 0.75 (luôn đạt 85.02% - 85.79%). Cấu hình này thuộc một "vùng cực trị phẳng" (flat region), có độ biến động giữa các seed/fold thấp, đảm bảo khả năng tổng quát hóa tối ưu khi đánh giá trên tập Test độc lập.
-   * *Ý nghĩa lý thuyết của Focal Loss:* Khi γ = 0.2, thừa số (1 - p_t)^0.2 xấp xỉ 1, làm hàm tổn thất hoạt động gần như trùng với Weighted BCE. Chỉ khi γ = 2.0, thừa số (1 - p_t)^2 mới tạo ra lực triệt tiêu đủ mạnh lên các mẫu dễ phân loại (p_t > 0.9), ép gradient tập trung tối đa vào các chuỗi hành vi khó ở vùng ranh giới.
+1. **Lý do lựa chọn α = 0.50 (Sự tối ưu hóa hài hòa giữa Precision và Recall):**
+   * Kết quả thực nghiệm cho thấy dải **α = 0.50** liên tục tạo ra hiệu năng áp đảo trên hầu hết các mô hình dạng chuỗi (BiGRU-Attention đạt 87.59%, GRU đạt 85.26%, LSTM đạt 85.17%).
+   * Việc thiết lập $\alpha = 0.50$ duy trì sự cân bằng lực kéo gradient giữa lớp dương tính (Fall) và âm tính (ADL), tránh hiện tượng phạt quá thiên lệch về một phía, từ đó đạt chỉ số F1-Score tối ưu hài hòa nhất trên toàn tập dữ liệu.
+
+2. **Lý do lựa chọn γ = 2.0 (Ý nghĩa Focal Loss và Độ ổn định vùng cực trị):**
+   * *Đạt hiệu năng cao nhất (Global Peak):* Cấu hình $(\alpha = 0.50, \gamma = 2.0)$ đạt đỉnh F1-Score **87.59%** trên mô hình BiGRU-Attention, cao nhất trong toàn bộ 100 cấu hình thực nghiệm của 4 kiến trúc.
+   * *Ý nghĩa lý thuyết của Focal Loss:* Với $\gamma = 2.0$, thừa số $(1 - p_t)^2$ tạo ra lực triệt tiêu trọng số tổn thất đủ mạnh đối với các mẫu dễ phân loại ($p_t > 0.9$), ép gradient tập trung tối đa vào việc xử lý các chuỗi hành vi khó ở vùng ranh giới (ví dụ: cúi nhanh, ngồi xuống đột ngột dễ bị nhầm với té ngã).
+   * *Tính ổn định vùng (Flat Minimum Region):* Tại cột $\alpha = 0.50$, hiệu năng của BiGRU-Attention duy trì mức rất cao và phẳng trên các giá trị $\gamma$ lớn ($\gamma = 0.5: 87.39\%$, $\gamma = 1.0: 86.49\%$, $\gamma = 2.0: 87.59\%$). Việc nằm trong một vùng cực trị phẳng đảm bảo mô hình có độ bền vững cao với nhiễu dữ liệu và đạt khả năng tổng quát hóa tối ưu khi đánh giá trên tập Test độc lập.
 
 ---
 
@@ -236,41 +238,43 @@ Thực nghiệm **Ablation Study** được thực hiện trên tập **Validati
 
 | STT | Biến thể Cấu hình Thử nghiệm | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | Parameters | FLOPs (M) | Tác động khi cắt bỏ / Thay thế |
 | :-: | :--- | :-: | :-: | :-: | :-: | :-: | :-: | :--- |
-| **1** | **PROPOSED (BiGRU + Attention + Kinematics)** | **92.98** | **87.43** | **83.15** | **85.24** | **139,266** | **4.5100** | **Mô hình đề xuất đầy đủ (Baseline)** |
-| **2** | **BiGRU (Bỏ Attention)** | 91.19 | 79.01 | 86.96 | 82.79 | 139,137 | 4.5059 | F1 giảm **-2.45%**: Precision giảm mạnh xuống 79.01%. |
-| **3** | **LSTM + Attention** | 91.66 | 80.25 | 87.23 | 83.59 | 185,602 | 6.0009 | F1 giảm **-1.65%**: Tốn thêm ~33.3% FLOPs và Params. |
-| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.25 | 84.76 | 83.15 | 83.95 | 185,473 | 5.9968 | F1 giảm **-1.29%**: Tốn nhiều tài nguyên nhưng kém hiệu quả. |
-| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 92.25 | 80.54 | 89.95 | 84.98 | 113,154 | 3.6744 | F1 giảm **-0.26%**: Giảm 18.7% FLOPs nhưng Precision bị giảm mạnh. |
-| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | 82.34 | 86.70 | 139,266 | 4.5100 | F1 đạt 86.70% ở ngưỡng 0.5, nhưng Recall thấp hơn (82.34%). |
+| **1** | **PROPOSED (BiGRU + Attention + Kinematics)** | **94.24** | **92.19** | **83.42** | **87.59** | **139,266** | **4.5100** | **Mô hình đề xuất đầy đủ (Baseline)** |
+| **2** | **BiGRU (Bỏ Attention)** | 93.18 | 90.27 | 80.71 | 85.22 | 139,137 | 4.5059 | F1 giảm **-2.37%**: Precision và Recall đều sụt giảm. |
+| **3** | **LSTM + Attention** | 93.31 | 89.15 | 82.61 | 85.75 | 185,602 | 6.0009 | F1 giảm **-1.84%**: Tốn thêm ~33.3% FLOPs và Params. |
+| **4** | **Vanilla LSTM (Bỏ Attention)** | 92.72 | 88.62 | 80.43 | 84.33 | 185,473 | 5.9968 | F1 giảm **-3.26%**: Tốn tài nguyên nhưng hiệu năng kém nhất. |
+| **5** | **Bỏ Kinematics (Chỉ Pose thô 34 dims)** | 93.91 | 91.32 | 82.88 | 86.89 | 113,154 | 3.6744 | F1 giảm **-0.70%**: Tiết kiệm ~18.5% FLOPs nhưng suy giảm hiệu năng. |
+| **6** | **Bỏ Focal Loss (Standard BCE)** | 93.84 | 91.54 | 82.34 | 86.70 | 139,266 | 4.5100 | F1 giảm **-0.89%**: Recall thấp hơn và tổng thể kém hiệu quả hơn Focal Loss. |
 
 ---
 
 ### Phân tích đóng góp & Độ phức tạp tính toán
 
 - **Cơ chế Attention (Cấu hình 1 vs 2):**
-  Loại bỏ khối Attention khỏi BiGRU khiến F1-Score giảm từ **85.24%** xuống **82.79%** (-2.45%), đặc biệt Precision sụt giảm mạnh từ **87.43%** xuống **79.01%** (-8.42%). Đáng chú ý, cơ chế Attention chỉ bổ sung **129 parameters** (139,266 vs 139,137) và tiêu tốn thêm một lượng chi phí tính toán cực kỳ nhỏ (**0.0041 MFLOPs**). Điều này chứng minh Attention mang lại hiệu quả nâng cao độ chính xác vượt trội với mức chi phí tài nguyên gần như không đáng kể.
+  Loại bỏ khối Attention khỏi BiGRU khiến F1-Score giảm từ **87.59%** xuống **85.22%** (-2.37%), đồng thời sụt giảm ở cả Precision (từ **92.19%** xuống **90.27%**) và Recall (từ **83.42%** xuống **80.71%**). Đáng chú ý, cơ chế Attention chỉ bổ sung **129 parameters** (139,266 vs 139,137) và tiêu tốn thêm một lượng chi phí tính toán cực kỳ nhỏ (**0.0041 MFLOPs**). Điều này chứng minh Attention mang lại hiệu quả tập trung trọng số thời gian vượt trội với mức chi phí tài nguyên gần như không đáng kể.
 
 - **So sánh BiGRU và LSTM (Cấu hình 1 vs 3):**
-  Khi thay thế BiGRU bằng LSTM, F1-Score giảm xuống **83.59%** (-1.65%). Xét về mặt tài nguyên phần cứng, kiến trúc LSTM tốn nhiều hơn **33.27% số lượng Parameters** (185,602 vs 139,266) và **33.06% chi phí tính toán FLOPs** (6.0009M vs 4.5100M). Kết quả khẳng định BiGRU là sự lựa chọn tối ưu hơn hẳn LSTM cả về độ chính xác lẫn tính gọn nhẹ khi xử lý chuỗi thời gian ngắn.
+  Khi thay thế BiGRU bằng LSTM (+ Attention), F1-Score giảm xuống **85.75%** (-1.84%). Xét về mặt tài nguyên phần cứng, kiến trúc LSTM tốn nhiều hơn **33.27% số lượng Parameters** (185,602 vs 139,266) và **33.06% chi phí tính toán FLOPs** (6.0009M vs 4.5100M). Kết quả khẳng định BiGRU là sự lựa chọn tối ưu hơn hẳn LSTM cả về độ chính xác lẫn tính gọn nhẹ khi xử lý chuỗi thời gian ngắn.
 
 - **Đặc trưng Động học Kinematics (Cấu hình 1 vs 5):**
-  Khi cắt bỏ thông tin Vận tốc và Gia tốc (chuyển từ 102 chiều xuống 34 chiều pose thô), số lượng FLOPs giảm **18.5%** (từ 4.5100M xuống 3.6744M) và tham số giảm xuống còn 113,154. Tuy nhiên, Precision bị giảm mạnh từ **87.43%** xuống **80.54%** (-6.89%), làm gia tăng tỷ lệ báo động giả (False Positives). Việc đánh đổi thêm **0.8356 MFLOPs** để tích hợp Kinematics hoàn toàn đáng giá nhằm đảm bảo tính ổn định của hệ thống.
+  Khi cắt bỏ thông tin Vận tốc và Gia tốc (chuyển từ 102 chiều xuống 34 chiều pose thô), số lượng FLOPs giảm **18.53%** (từ 4.5100M xuống 3.6744M) và tham số giảm xuống còn 113,154. Tuy nhiên, F1-Score giảm từ **87.59%** xuống **86.89%** (-0.70%), với Precision giảm xuống **91.32%** và Recall giảm xuống **82.88%**. Việc đánh đổi thêm **0.8356 MFLOPs** để tích hợp Kinematics hoàn toàn đáng giá nhằm đảm bảo mô hình nắm bắt tốt các biến thiên chuyển động đột ngột đặc thù của hành vi té ngã.
 
 - **Hàm mất mát Focal Loss (Cấu hình 1 vs 6):**
-  Thay thế Focal Loss bằng Standard BCE duy trì nguyên vẹn tham số (139,266) và FLOPs (4.5100M). Mặc dù ở ngưỡng mặc định 0.5, Standard BCE đạt F1-Score cao hơn (86.70%), nhưng Recall lại sụt giảm xuống mức thấp nhất (**82.34%**). Đối với bài toán té ngã, Recall là chỉ số ưu tiên hàng đầu để tránh bỏ sót các ca té ngã nguy hiểm; do đó, Focal Loss vẫn là giải pháp phân tách xác suất hiệu quả hơn.
+  Thay thế Focal Loss bằng Standard BCE duy trì nguyên vẹn tham số (139,266) và FLOPs (4.5100M). Tuy nhiên, F1-Score sụt giảm từ **87.59%** xuống **86.70%** (-0.89%), với Recall giảm xuống **82.34%** (so với 83.42% của mô hình đề xuất). Kết quả này khẳng định Focal Loss giúp mô hình xử lý tình trạng mất cân bằng dữ liệu hiệu quả hơn, duy trì khả năng nhận diện cao ở cả Precision và Recall.
 
 ---
 
 ### 4.4. Đánh giá Mô hình Đề xuất trên tập Test độc lập
 
-Sau khi xác định cấu hình tối ưu từ ablation study, mô hình **BiGRU + Attention + Kinematics + Focal Loss** được đưa vào đánh giá chính thức trên Test Set hoàn toàn độc lập (chiếm 15% tổng dữ liệu, chưa từng xuất hiện trong quá trình huấn luyện hay tinh chỉnh tham số). Ngưỡng phân loại tối ưu **Youden Index (J = 0.45)** được áp dụng để tối đa hóa khả năng phát hiện sự cố té ngã.
+Sau khi xác định cấu hình tối ưu từ ablation study, mô hình **BiGRU + Attention + Kinematics + Focal Loss** được đưa vào đánh giá chính thức trên Test Set hoàn toàn độc lập (chiếm 15% tổng dữ liệu, chưa từng xuất hiện trong quá trình huấn luyện hay tinh chỉnh tham số). Ngưỡng phân loại tối ưu theo chỉ số **Youden Index ($J = 0.4577$, làm tròn $\approx 0.46$)** được áp dụng nhằm cân bằng và tối đa hóa khả năng phát hiện sự cố té ngã.
+
+#### Bảng chỉ số đánh giá trên tập Test độc lập
 
 | Chỉ số đánh giá | Giá trị | Ý nghĩa ứng dụng trong giám sát té ngã |
 | :--- | :---: | :--- |
 | **Accuracy** | **92.47%** | Phân loại chính xác 92.47% tổng số chuỗi hành vi. |
 | **Precision** | **80.34%** | Trong các cảnh báo đưa ra, 80.34% phản ánh đúng sự cố té ngã thực tế. |
 | **Recall (Fall)** | **91.62%** | Nhận diện chính xác 91.62% các trường hợp té ngã thực tế. |
-| **F1-Score** | **85.61%** | Đạt mức cân bằng giữa khả năng phát hiện sự cố và hạn chế cảnh báo nhầm. |
+| **F1-Score** | **85.61%** | Đạt mức cân bằng tối ưu giữa khả năng phát hiện sự cố và hạn chế cảnh báo nhầm. |
 
 ---
 
@@ -282,13 +286,15 @@ Sau khi xác định cấu hình tối ưu từ ablation study, mô hình **BiGR
   <img src="plots/Confusion Matrix Fall Detection.png" alt="Normalized Confusion Matrix" width="550">
 </p>
 
-Đánh giá ma trận nhầm lẫn chuẩn hóa cho thấy:
-* **ADL (Bình thường):** Phân loại chính xác **93.0%**.
-* **Fall (Té ngã):** Nhận diện chính xác **92.0%** (tương ứng với độ nhạy Recall trên tập Test).
+Đánh giá ma trận nhầm lẫn chuẩn hóa trên tập Test độc lập (với threshold = 0.46) cho thấy:
+* **ADL (Sinh hoạt bình thường):** Phân loại chính xác **93.0%**.
+* **Fall (Té ngã):** Nhận diện chính xác **92.0%** (tương ứng với độ nhạy Recall cao trên tập dữ liệu kiểm thử).
 
 > **Phân tích chỉ số lỗi:**
-> * **Tỷ lệ báo động giả (False Alarm Rate):** 7.0% các hoạt động sinh hoạt bình thường bị ghi nhận nhầm thành té ngã.
-> * **Tỷ lệ bỏ sót sự cố (False Negative Rate):** Mô hình bỏ sót 8.0% các trường hợp té ngã thực tế. Tỷ lệ này đáp ứng được yêu cầu an toàn đối với các hệ thống giám sát tự động dựa trên khung xương.
+> * **Tỷ lệ báo động giả (False Alarm Rate):** Chỉ **7.0%** các hoạt động sinh hoạt bình thường bị ghi nhận nhầm thành té ngã (ADL bị dự đoán nhầm thành Fall).
+> * **Tỷ lệ bỏ sót sự cố (False Negative Rate):** Mô hình bỏ sót **8.0%** các trường hợp té ngã thực tế (Fall bị dự đoán nhầm thành ADL). Đây là ngưỡng sai số hoàn toàn chấp nhận được và đáp ứng tốt yêu cầu an toàn đối với các hệ thống giám sát tự động dựa trên khung xương.
+
+---
 
 ### 5.2. Biểu đồ lịch sử huấn luyện (Training History Analysis)
 
@@ -297,10 +303,10 @@ Sau khi xác định cấu hình tối ưu từ ablation study, mô hình **BiGR
 </p>
 
 #### a. Biểu đồ đường Loss
-* **Độ hội tụ vượt trội:** Đường `Train Loss` giảm mạnh mẽ và mượt mà từ **0.0460** xuống còn **0.0029** (Epoch 50), cho thấy mô hình học tập vô cùng nhanh chóng nhờ vào cơ chế chú ý thông minh.
-* **Độ ổn định cao:** Đường `Val Loss` giảm sâu ở các epoch đầu và dao động cực kỳ ổn định trong vùng cực tiểu (`0.0216` đến `0.0240`) ở giai đoạn sau. Hiện tượng quá khớp (overfitting) hoàn toàn được kiểm soát tốt.
-* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được tự động ghi nhận và khôi phục tại **Epoch 46** (thời điểm đạt đỉnh cao nhất về khả năng phân loại toàn diện với `Val F1 = 90.1%` và `Val Recall = 88.6%`).
+* **Độ hội tụ vượt trội:** Đường `Train Loss` giảm mạnh mẽ và mượt mà từ **0.0460** (Epoch 1) xuống còn **0.0029** (Epoch 50), cho thấy mô hình tối ưu hóa trọng số rất nhanh chóng nhờ vào cơ chế chú ý (Attention Mechanism) và đặc trưng động học Kinematics.
+* **Độ ổn định cao:** Đường `Val Loss` giảm sâu ở các epoch đầu và dao động cực kỳ ổn định trong vùng cực tiểu (đạt mức thấp nhất **0.0216** ở Epoch 32 và duy trì trong dải **0.022 - 0.033**). Hiện tượng quá khớp (overfitting) hoàn toàn được kiểm soát nhờ các kỹ thuật Dropout và Regularization.
+* **Điểm dừng tối ưu:** Trạng thái mô hình tốt nhất được tự động ghi nhận và khôi phục tại **Epoch 46** (thời điểm đạt đỉnh F1 toàn diện nhất trên tập Validation với `Val F1 = 90.1%`, `Val Recall = 88.6%`, `Val Acc = 95.2%`, `Train Loss = 0.0037` và `Train Acc = 98.6%`).
 
 #### b. Biểu đồ độ chính xác (Accuracy)
-* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` bứt phá bền vững từ **80.1%** lên tới **98.3%** ở epoch 50.
-* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` tăng tốc nhanh chóng ngay từ 10 epoch đầu tiên (vượt mốc 90%) và duy trì ổn định trong biên độ cao từ **92.5% - 95.2%** cho đến cuối, khẳng định sự vượt trội hoàn toàn của kiến trúc **BiGRU-Attention** mới.
+* **Tập huấn luyện (Train Set):** Đường `Train Accuracy` bứt phá bền vững từ **80.1%** lên đến **98.3%** ở epoch 50 (đạt đỉnh **98.9%** ở epoch 47 & 49).
+* **Tập kiểm thử nội bộ (Validation Set):** Đường `Val Accuracy` tăng tốc nhanh chóng ngay từ 10 epoch đầu tiên (vượt mốc 91%) và duy trì ổn định trong biên độ cao từ **92.5% - 95.2%** cho đến cuối quá trình huấn luyện, khẳng định tính tổng quát hóa cao của kiến trúc **BiGRU-Attention**.
