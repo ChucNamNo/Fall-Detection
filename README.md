@@ -1,4 +1,6 @@
-# Skeleton-Based Fall Detection System
+<p align="center">
+  <h2><b>Skeleton-Based Fall Detection System</b></h2>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white" alt="Python">
@@ -111,10 +113,10 @@ Ngoại trừ tọa độ không gian tĩnh, hệ thống tính toán vi phân b
 
 ### 3.3. Xử lý mất cân bằng nhãn (Imbalanced Data Handling)
 
-#### 1. Focal Loss chuẩn hóa (α = 0.75, γ = 2.0)
+#### 1. Focal Loss chuẩn hóa (α = 0.50, γ = 2.0)
 Thay thế hàm tổn thất Binary Cross Entropy (BCE) truyền thống nhằm giảm trọng số đóng góp của các mẫu dễ phân loại và tập trung gradient vào các mẫu khó phân biệt:
 
-* **α = 0.75**: Tăng hệ số phạt tổn thất khi dự đoán sai lớp té ngã (lớp 1).
+* **α = 0.50**: Tăng hệ số phạt tổn thất khi dự đoán sai lớp té ngã (lớp 1).
 * **γ = 2.0**: Điều chỉnh tốc độ giảm trọng số của các mẫu dễ phân loại.
 
 #### 2. Nhiễu Skeleton Jittering (Data Augmentation)
