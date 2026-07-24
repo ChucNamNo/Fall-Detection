@@ -1,6 +1,4 @@
-<p align="center">
-  <h2><b>Skeleton-Based Fall Detection System</b></h2>
-</p>
+<h1 align="center"><b>Skeleton-Based Fall Detection System</b></h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white" alt="Python">
