@@ -114,18 +114,18 @@ Trong đó:
 * **Tâm hông ($\mathbf{C}_{\text{hip}}$):** Được xác định bằng trung điểm tọa độ của 2 khớp hông trái và phải (Keypoint 11 và 12):
   $$\mathbf{C}_{\text{hip}} = \frac{\mathbf{KP}[11] + \mathbf{KP}[12]}{2}$$
 * **Chiều cao cơ thể ước tính ($H_{\text{body}}$):** Tính bằng khoảng cách theo trục thẳng đứng ($Y$) từ đỉnh đầu/mũi (Keypoint 0) đến vị trí thấp nhất của hai cổ chân (Keypoint 15 và 16):
-  $$H_{\text{body}} = \max\left( \big| Y_{\text{foot\_max}} - Y_{\text{head}} \big|, 1.0 \right)$$
-  *(Lưu ý: Mẫu số $H_{\text{body}}$ được giới hạn giá trị tối thiểu là $1.0$ để phòng tránh lỗi chia cho 0).*
+  $$H_{\text{body}} = \max\left( \big| Y_{\text{foot}} - Y_{\text{head}} \big|, 1.0 \right)$$
+  (Lưu ý: Mẫu số $$H_{\text{body}}$$ được giới hạn giá trị tối thiểu là 1.0 để phòng tránh lỗi chia cho 0).
 
 #### 4. Kỹ thuật Cửa sổ Trượt & Gán nhãn Chuỗi (Sliding Window Strategy)
 Dữ liệu chuỗi khung xương sau khi chuẩn hóa được đóng gói thành các mẫu chuỗi thời gian (time-series sequences) phục vụ cho mô hình học sâu:
 * **Kích thước cửa sổ (Window Size):** $W = 16$ frames (tương đương $\approx 0.53 - 0.64$ giây quan sát động học).
 * **Bước trượt (Step/Stride):** $S = 4$ frames. Việc chọn $S = 4$ tạo ra sự chồng lấp 75% (overlap) giữa các cửa sổ kề nhau, giúp tăng cường số lượng mẫu huấn luyện và bắt trọn mọi khoảnh khắc chuyển tiếp hành vi.
-* **Quy tắc gán nhãn chuỗi (Sequence Labeling):** 
+* **Quy tắc gán nhãn chuỗi (Sequence Labeling):**
 
-$$\text{Label}_{\text{sequence}} = \begin{cases} 1, & \text{nếu tồn tại ít nhất 1 frame } f_t \in \text{cửa sổ 16 frames thỏa mãn } f_t \in \text{fall\_frames\_set} \\ 0, & \text{ngược lại (ADL - Sinh hoạt bình thường)} \end{cases}$$
+$$\text{Label}_{\text{seq}} = \begin{cases} 1, & \text{nếu } \exists f_t \in \text{cửa sổ 16 frames} \text{ mà } f_t \in \text{fall}\_\text{frames} \\ 0, & \text{ngược lại (ADL - Sinh hoạt bình thường)} \end{cases}$$
 
-Toàn bộ dữ liệu sau khi đóng gói được xuất ra 2 file định dạng NumPy bao gồm `sequences.npy` (mảng chứa các chuỗi tọa độ $16 \times 17 \times 2$) và `labels.npy` (mảng nhãn $0$ hoặc $1$) lưu trữ an toàn tại thư mục `./data_processed`.
+Toàn bộ dữ liệu sau khi đóng gói được xuất ra 2 file định dạng NumPy bao gồm `sequences.npy` (mảng chứa các chuỗi tọa độ $16 \times 17 \times 2$) và `labels.npy` (mảng nhãn $0$ hoặc $1$).
 
 ### 3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)
 Ngoại trừ tọa độ không gian tĩnh, hệ thống tính toán vi phân bậc 1 (Vận tốc) và bậc 2 (Gia tốc) theo trục thời gian để phản ánh biến động động học của chuỗi hành vi.
