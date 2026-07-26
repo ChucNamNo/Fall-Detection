@@ -27,7 +27,7 @@ Hệ thống phát hiện hành vi té ngã theo thời gian thực dựa trên 
 - [2. Bộ dữ liệu huấn luyện (Dataset)](#2-bộ-dữ-liệu-huấn-luyện-dataset)
   - [2.1. Chiến lược phân chia dữ liệu (Data Splitting Strategy)](#21-chiến-lược-phân-chia-dữ-liệu-data-splitting-strategy)
 - [3. Phương pháp thực hiện (Methodology)](#3-phương-pháp-thực-hiện-methodology)
-  - [3.1. Chuẩn hóa không gian (Spatial Normalization)](#31-chuẩn-hóa-không-gian-spatial-normalization)
+  - [3.1. Quy trình Tiền xử lý Dữ liệu & Chuẩn hóa Không gian (Data Pipeline & Spatial Normalization)](#31-quy-trình-tiền-xử-lý-dữ-liệu--chuẩn-hóa-không-gian-data-pipeline--spatial-normalization)
   - [3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)](#32-trích-xuất-đặc-trưng-động-học-kinematic-feature-engineering)
   - [3.3. Xử lý mất cân bằng nhãn (Imbalanced Data Handling)](#33-xử-lý-mất-cân-bằng-nhãn-imbalanced-data-handling)
   - [3.4. Cơ chế Chú ý Chi tiết (Feed-Forward Soft Attention Mechanism)](#34-cơ-chế-chú-ý-chi-tiết-feed-forward-soft-attention-mechanism)
@@ -88,8 +88,44 @@ Toàn bộ **10,091 mẫu** dữ liệu được phân chia theo tỷ lệ **70 
 
 ## 3. Phương pháp thực hiện (Methodology)
 
-### 3.1. Chuẩn hóa không gian (Spatial Normalization)
-Tọa độ 17 khớp xương (x, y) trích xuất từ YOLOv8-Pose được quy đổi về gốc tọa độ tâm hông (hip center), sau đó chuẩn hóa theo chiều cao cơ thể trong từng khung hình. Kỹ thuật này giúp vector không gian đạt tính bất biến với khoảng cách và vị trí của đối tượng so với camera.
+### 3.1. Quy trình Tiền xử lý Dữ liệu & Chuẩn hóa Không gian (Data Pipeline & Spatial Normalization)
+
+Quy trình xử lý dữ liệu đầu vào từ video thô của bộ dữ liệu **IMVIA Le2i** đến tập dữ liệu chuỗi khung xương hoàn chỉnh được thực hiện khép kín qua 4 bước chính:
+
+> **Pipeline:** `[Video .avi Thô]` ──> `[Bóc tách Annotation]` ──> `[Trích xuất Pose (YOLOv8)]` ──> `[Chuẩn hóa Khung xương]` ──> `[Sliding Window (16 frames)]`
+
+#### 1. Bóc tách và Cấu trúc Nhãn Nâng cao (Advanced Annotation Parsing)
+Mỗi video trong bộ dữ liệu IMVIA đi kèm với file cấu hình `.txt` ghi nhận nhãn hành vi. Hàm xử lý nhãn đọc và bóc tách tập hợp các frame té ngã (`fall_frames_set`) thông qua 2 cơ chế song song:
+* **Dạng khoảng frame (Range format):** Đọc dải frame liên tục từ `start_fall` đến `end_fall` ghi ở các dòng đầu tiên của file annotation.
+* **Dạng mã trạng thái (Status code format):** Quét từng dòng theo cấu trúc `(frame_idx, status_code)`. Các frame mang mã trạng thái thuộc tập $\{2, 4, 7, 8\}$ (đại diện cho các giai đoạn mất thăng bằng, va chạm và nằm trên sàn) sẽ được nạp trực tiếp vào tập nhãn té ngã.
+
+#### 2. Trích xuất Khung xương với YOLOv8-Pose (Keypoint Extraction)
+Video `.avi` được đọc theo từng khung hình (frame-by-frame) qua thư viện OpenCV:
+* Mô hình thị giác **YOLOv8n-Pose** (`yolov8n-pose.pt`) tiến hành phát hiện người và trích xuất tọa độ không gian 2D của **17 điểm khớp chuẩn COCO** ($\mathbf{KP} \in \mathbb{R}^{17 \times 2}$).
+
+#### 3. Chuẩn hóa Không gian Khung xương (Spatial Normalization)
+Để giúp vector đặc trưng đạt **tính bất biến với vị trí, khoảng cách và góc nhìn của camera** đối với đối tượng, ma trận tọa độ $\mathbf{KP}$ của từng frame được chuẩn hóa theo công thức:
+
+$$\mathbf{KP}_{\text{shifted}} = \mathbf{KP} - \mathbf{C}_{\text{hip}}$$
+
+$$\mathbf{KP}_{\text{normalized}} = \frac{\mathbf{KP}_{\text{shifted}}}{H_{\text{body}}}$$
+
+Trong đó:
+* **Tâm hông ($\mathbf{C}_{\text{hip}}$):** Được xác định bằng trung điểm tọa độ của 2 khớp hông trái và phải (Keypoint 11 và 12):
+  $$\mathbf{C}_{\text{hip}} = \frac{\mathbf{KP}[11] + \mathbf{KP}[12]}{2}$$
+* **Chiều cao cơ thể ước tính ($H_{\text{body}}$):** Tính bằng khoảng cách theo trục thẳng đứng ($Y$) từ đỉnh đầu/mũi (Keypoint 0) đến vị trí thấp nhất của hai cổ chân (Keypoint 15 và 16):
+  $$H_{\text{body}} = \max\left( \big| Y_{\text{foot\_max}} - Y_{\text{head}} \big|, 1.0 \right)$$
+  *(Lưu ý: Mẫu số $H_{\text{body}}$ được giới hạn giá trị tối thiểu là $1.0$ để phòng tránh lỗi chia cho 0).*
+
+#### 4. Kỹ thuật Cửa sổ Trượt & Gán nhãn Chuỗi (Sliding Window Strategy)
+Dữ liệu chuỗi khung xương sau khi chuẩn hóa được đóng gói thành các mẫu chuỗi thời gian (time-series sequences) phục vụ cho mô hình học sâu:
+* **Kích thước cửa sổ (Window Size):** $W = 16$ frames (tương đương $\approx 0.53 - 0.64$ giây quan sát động học).
+* **Bước trượt (Step/Stride):** $S = 4$ frames. Việc chọn $S = 4$ tạo ra sự chồng lấp 75% (overlap) giữa các cửa sổ kề nhau, giúp tăng cường số lượng mẫu huấn luyện và bắt trọn mọi khoảnh khắc chuyển tiếp hành vi.
+* **Quy tắc gán nhãn chuỗi (Sequence Labeling):** 
+
+$$\text{Label}_{\text{sequence}} = \begin{cases} 1, & \text{nếu tồn tại ít nhất 1 frame } f_t \in \text{cửa sổ 16 frames thỏa mãn } f_t \in \text{fall\_frames\_set} \\ 0, & \text{ngược lại (ADL - Sinh hoạt bình thường)} \end{cases}$$
+
+Toàn bộ dữ liệu sau khi đóng gói được xuất ra 2 file định dạng NumPy bao gồm `sequences.npy` (mảng chứa các chuỗi tọa độ $16 \times 17 \times 2$) và `labels.npy` (mảng nhãn $0$ hoặc $1$) lưu trữ an toàn tại thư mục `./data_processed`.
 
 ### 3.2. Trích xuất đặc trưng động học (Kinematic Feature Engineering)
 Ngoại trừ tọa độ không gian tĩnh, hệ thống tính toán vi phân bậc 1 (Vận tốc) và bậc 2 (Gia tốc) theo trục thời gian để phản ánh biến động động học của chuỗi hành vi.
