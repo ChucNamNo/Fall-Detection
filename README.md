@@ -123,7 +123,7 @@ Dữ liệu chuỗi khung xương sau khi chuẩn hóa được đóng gói thà
 * **Bước trượt (Step/Stride):** $S = 4$ frames. Việc chọn $S = 4$ tạo ra sự chồng lấp 75% (overlap) giữa các cửa sổ kề nhau, giúp tăng cường số lượng mẫu huấn luyện và bắt trọn mọi khoảnh khắc chuyển tiếp hành vi.
 * **Quy tắc gán nhãn chuỗi (Sequence Labeling):**
 
-$$\text{Label}_{\text{seq}} = \begin{cases} 1, & \text{nếu } \exists f_t \in \text{cửa sổ 16 frames} \text{ mà } f_t \in \text{fall}\_\text{frames} \\; 0, & \text{ngược lại (ADL - Sinh hoạt bình thường)} \end{cases}$$
+$$\text{Label}_{\text{seq}} = \begin{cases} 1, & \text{nếu } \exists \, f_t \in \text{cửa sổ 16 frames} \text{ mà } f_t \in \text{fall}_{\text{frames}} \\ 0, & \text{ngược lại (ADL - Sinh hoạt bình thường)} \end{cases}$$
 
 Toàn bộ dữ liệu sau khi đóng gói được xuất ra 2 file định dạng NumPy bao gồm `sequences.npy` (mảng chứa các chuỗi tọa độ $16 \times 17 \times 2$) và `labels.npy` (mảng nhãn $0$ hoặc $1$).
 
