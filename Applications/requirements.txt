@@ -1,0 +1,6 @@
+# Giữ nguyên bản PyTorch CUDA hiện có trên máy để tránh bị pip thay bằng bản CPU.
+Django>=4.2,<6.0
+ultralytics>=8.2,<9.0
+opencv-python>=4.8,<5.0
+numpy>=1.24,<3.0
+Pillow>=10,<12
