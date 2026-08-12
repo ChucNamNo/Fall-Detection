@@ -1,0 +1,104 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fall Detection — Phát hiện té ngã</title>
+  <link rel="stylesheet" href="{% static 'detector/css/style.css' %}">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">FG</div>
+        <div>
+          <h1>FallGuard AI</h1>
+          <p>YOLOv8-Pose · BiGRU-Attention</p>
+        </div>
+      </div>
+      <div class="server-chip" id="serverChip"><span></span><b>Đang kiểm tra mô hình</b></div>
+    </header>
+
+    <main class="dashboard">
+      <section class="camera-card card">
+        <div class="card-head">
+          <div>
+            <p class="eyebrow">CAMERA / VIDEO DEMO</p>
+            <h2>Giám sát tư thế và phát hiện té ngã</h2>
+          </div>
+          <div class="camera-tools">
+            <select id="cameraSelect" aria-label="Chọn camera">
+              <option value="">Camera mặc định</option>
+            </select>
+            <select id="fpsSelect" aria-label="Tốc độ phân tích frame">
+              <option value="125">8 FPS</option>
+              <option value="83">12 FPS</option>
+              <option value="67" selected>15 FPS</option>
+              <option value="50">20 FPS</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="video-stage" id="videoStage">
+          <video id="cameraVideo" autoplay muted playsinline></video>
+          <canvas id="poseCanvas"></canvas>
+          <div class="camera-placeholder" id="cameraPlaceholder">
+            <div class="camera-icon">◉</div>
+            <h3>Chưa có nguồn hình ảnh</h3>
+            <p>Bật camera hoặc tải một video lên để bắt đầu demo.</p>
+          </div>
+          <div class="fall-flash" id="fallFlash" role="alert">PHÁT HIỆN TÉ NGÃ</div>
+        </div>
+        <canvas id="captureCanvas" hidden></canvas>
+
+        <div class="controls">
+          <button class="btn btn-primary" id="startButton">
+            <span class="btn-label">Bật camera</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button class="btn btn-upload" id="uploadButton">Tải video demo</button>
+          <input id="videoFileInput" class="visually-hidden" type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov,.m4v">
+          <button class="btn" id="stopButton" disabled>Dừng</button>
+          <button class="btn" id="resetButton">Đặt lại phân tích</button>
+          <label class="sound-toggle"><input type="checkbox" id="soundToggle" checked><span>Âm cảnh báo</span></label>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <section class="status-card card status-idle" id="statusCard" aria-live="polite" aria-atomic="true">
+          <p class="eyebrow">TRẠNG THÁI</p>
+          <div class="status-row">
+            <div class="status-orb"><span></span></div>
+            <div>
+              <h2 id="statusText">CHỜ DỮ LIỆU</h2>
+              <p id="statusDescription">Hệ thống sẵn sàng khởi động.</p>
+            </div>
+          </div>
+          <div class="probability-block">
+            <div class="metric-label"><span>Xác suất té ngã</span><b id="probabilityText">0.0%</b></div>
+            <div class="probability-track"><div id="probabilityFill"></div><i id="thresholdMark"></i></div>
+            <div class="threshold-label">Ngưỡng model: <span id="thresholdText">45.77%</span></div>
+          </div>
+        </section>
+
+        <section class="metrics-grid">
+          <article class="metric card"><span>Sự kiện Fall</span><strong id="fallCount">0</strong><small>Số lần chuyển Normal → Fall</small></article>
+          <article class="metric card"><span>FPS</span><strong><b id="fpsValue">—</b><em> FPS</em></strong><small id="deviceText">Chưa tải model</small></article>
+        </section>
+
+        <section class="events-card card">
+          <div class="events-head"><div><p class="eyebrow">NHẬT KÝ</p><h3>Sự kiện gần đây</h3></div><button id="clearLogButton">Xóa</button></div>
+          <div class="event-list" id="eventList" aria-live="polite"><div class="empty-log">Chưa có sự kiện.</div></div>
+        </section>
+      </aside>
+    </main>
+
+    <footer>
+      <span>Khung hình camera/video chỉ được gửi tới Django để dự đoán và không được lưu vào ổ đĩa.</span>
+      <span id="sessionLabel"></span>
+    </footer>
+  </div>
+  <script src="{% static 'detector/js/camera.js' %}"></script>
+</body>
+</html>
