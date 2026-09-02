@@ -1,4 +1,4 @@
-<h1 align="center"><b>Skeleton-Based Fall Detection System</b></h1>
+<h1 align="center"><b>Hệ Thống Phát Hiện Té Ngã</b></h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white" alt="Python">
