@@ -1,14 +1,3 @@
-"""Model service integrating YOLOv8-Pose and trained BiGRU-Attention.
-
-Kiến trúc Hybrid hoàn chỉnh (Direct Detections Only):
-- Robust Mode: Confidence-aware landmark fallback, delayed kinetics reset,
-  và cơ chế dọn dẹp bộ nhớ LRU cho camera stream.
-- Anti-Ghost Landmark Gate: Lọc chất lượng khớp xương cốt lõi (vai/hông) để triệt tiêu
-  hoàn toàn hiện tượng nhận diện nhầm đồ vật khi hạ ngưỡng conf.
-- CPU & Lightweight Optimized: Chuẩn hóa độ phân giải 480px và tối ưu đa luồng CPU
-  để duy trì FPS mượt mà trên máy yếu/không có GPU.
-- Geometric Posture Gating: Khử báo động giả vung tay / cúi người bằng góc nghiêng thân & tỷ lệ box.
-"""
 from __future__ import annotations
 
 import logging
