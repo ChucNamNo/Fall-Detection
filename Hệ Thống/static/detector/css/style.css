@@ -7,12 +7,6 @@
     --samsung-blue-glow: rgba(12, 132, 255, 0.35);
     --samsung-purple: #5e5ce6;
   
-    /* ============================================================
-       Apple Liquid Glass — hệ vật liệu (material tiers)
-       Lấy cảm hứng từ visionOS/macOS Sequoia: kính càng "mỏng" thì
-       càng trong, càng nhiều highlight bo cong ở mép trên/trái.
-       ============================================================ */
-  
     /* Regular material — dùng cho panel lớn (camera card, status card) */
     --glass-bg-regular: linear-gradient(
       160deg,
@@ -138,11 +132,6 @@
     100% { transform: translate3d(-30px, -25px, 0) scale(0.94); }
   }
   
-  /* ==========================================================================
-     Apple Liquid Glass Foundation
-     Kỹ thuật: 1 lớp backdrop-filter (khúc xạ nền) + 1 lớp gradient bề mặt
-     (độ đục kiểm soát) + viền "rim light" mô phỏng ánh sáng bẻ cong ở mép.
-     ========================================================================== */
   .glass-panel {
     position: relative;
     background: var(--glass-bg-regular);
